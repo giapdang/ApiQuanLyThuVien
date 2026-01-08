@@ -1,5 +1,7 @@
 package org.example.apiquanlythuvien.defaults;
 
+import java.math.BigDecimal;
+
 public class Const {
 
   // doc gia status
@@ -31,5 +33,12 @@ public class Const {
   public static final String PHIEUMUON_CT_OVERDUE = "QUA_HAN";    // Quá hạn
   public static final String PHIEUMUON_CT_DAMAGED = "HU_HONG";   // Hư hỏng
   public static final String PHIEUMUON_CT_LOST = "MAT";
+
+  // account roles
+  public static final String ROLE_ADMIN = "ADMIN";
+  public static final String ROLE_USER = "USER";
+
+  // doc gia tien ky quy mac dinh 100 nghin dong
+  public static final BigDecimal DEFAULT_TIEN_KY_QUY = new BigDecimal(100000);
 
 }

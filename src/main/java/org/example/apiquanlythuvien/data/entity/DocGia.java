@@ -45,7 +45,13 @@ public class DocGia {
   @Column(name = "tien_ky_quy", nullable = false)
   private BigDecimal tienKyQuy;
 
+  @Column(name = "trang_thai_doc_gia", nullable = false)
+  private String trangThaiDocGia;
+
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "account_id", nullable = false)
   private Account account;
+
+  @OneToOne(mappedBy = "docGia", cascade = CascadeType.ALL, orphanRemoval = true)
+  private TheThuVien theThuVien;
 }

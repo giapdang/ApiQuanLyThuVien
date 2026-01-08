@@ -11,15 +11,16 @@ create table account
 
 create table doc_gia
 (
-    tien_ky_quy   decimal(38, 2) not null,
-    account_id    bigint         not null,
-    doc_gia_id    bigint auto_increment
+    tien_ky_quy        decimal(38, 2) not null,
+    account_id         bigint         not null,
+    doc_gia_id         bigint auto_increment
         primary key,
-    ngay_sinh     datetime(6)    not null,
-    dia_chi       varchar(255)   not null,
-    email         varchar(255)   not null,
-    so_dien_thoai varchar(255)   not null,
-    ten_doc_gia   varchar(255)   not null,
+    ngay_sinh          datetime(6)    not null,
+    dia_chi            varchar(255)   not null,
+    email              varchar(255)   not null,
+    so_dien_thoai      varchar(255)   not null,
+    ten_doc_gia        varchar(255)   not null,
+    trang_thai_doc_gia varchar(255)   not null,
     constraint UK181xkx72sq1gva6osiaxoovdr
         unique (account_id),
     constraint UK2pq6tc4ufuxpyoe65hcwr1i72
