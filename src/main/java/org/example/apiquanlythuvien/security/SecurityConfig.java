@@ -29,9 +29,9 @@ public class SecurityConfig {
   public SecurityFilterChain configure(HttpSecurity http) throws Exception {
     http.csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/accounts/login").permitAll()
+            .requestMatchers("/api/accounts/login","/api/accounts/**").permitAll()
             .requestMatchers("/api/sach/all","/api/docgia/chitietdocgia").hasAuthority(Const.ROLE_USER)
-            .requestMatchers("/api/accounts/**","/api/docgia/all").hasAuthority(Const.ROLE_ADMIN)
+            .requestMatchers("/api/docgia/all").hasAuthority(Const.ROLE_ADMIN)
             .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults());
     return http.build();
