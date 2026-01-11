@@ -30,7 +30,8 @@ public class SecurityConfig {
     http.csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/accounts/login").permitAll()
-            .requestMatchers("/api/accounts/**").hasAuthority(Const.ROLE_ADMIN)
+            .requestMatchers("/api/sach/all","/api/docgia/chitietdocgia").hasAuthority(Const.ROLE_USER)
+            .requestMatchers("/api/accounts/**","/api/docgia/all").hasAuthority(Const.ROLE_ADMIN)
             .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults());
     return http.build();

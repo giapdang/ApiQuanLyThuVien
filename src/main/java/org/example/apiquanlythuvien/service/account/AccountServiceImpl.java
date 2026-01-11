@@ -58,6 +58,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
+  @Transactional
   public void createAccountQuanTri(AccountQuanTriRequest request) {
 
     if (accountRepository.existsByUsername(request.getUsername())) {
@@ -71,6 +72,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
+  @Transactional
   public LoginResponse login(LoginRequest request) {
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
@@ -89,6 +91,7 @@ public class AccountServiceImpl implements AccountService {
 
     LoginResponse response = new LoginResponse();
     response.setAccountId(account.getAccountId());
+    response.setUsername(account.getUsername());
     response.setRole(account.getRole());
 
     return response;

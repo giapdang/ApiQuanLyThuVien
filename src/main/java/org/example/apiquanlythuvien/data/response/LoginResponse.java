@@ -6,5 +6,6 @@ import lombok.Data;
 public class LoginResponse {
 
   private Long accountId;
+  private String username;
   private String role;
 }
