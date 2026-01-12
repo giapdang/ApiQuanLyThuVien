@@ -41,4 +41,8 @@ public class Const {
   // doc gia tien ky quy mac dinh 100 nghin dong
   public static final BigDecimal DEFAULT_TIEN_KY_QUY = new BigDecimal(100000);
 
+  // ban sao sach tinh trang (condition)
+  public static final String BANSACH_CONDITION_NEW = "MOI";
+  public static final String BANSACH_CONDITION_OLD = "CU";
+
 }
