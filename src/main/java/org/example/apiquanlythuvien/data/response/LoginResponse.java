@@ -8,4 +8,5 @@ public class LoginResponse {
   private Long accountId;
   private String username;
   private String role;
+  private String token;
 }

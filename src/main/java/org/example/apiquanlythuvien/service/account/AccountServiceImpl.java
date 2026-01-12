@@ -29,6 +29,7 @@ public class AccountServiceImpl implements AccountService {
   private final AccountMapper accountMapper;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
+  private final JwtUtil jwtUtil;
 
   @Override
   @Transactional
@@ -89,10 +90,15 @@ public class AccountServiceImpl implements AccountService {
 
     log.info("User {} logged in successfully", account.getUsername());
 
+    // tra ra token
+    String token = jwtUtil.generateToken(account);
+
+
     LoginResponse response = new LoginResponse();
     response.setAccountId(account.getAccountId());
     response.setUsername(account.getUsername());
     response.setRole(account.getRole());
+    response.setToken(token);
 
     return response;
   }
