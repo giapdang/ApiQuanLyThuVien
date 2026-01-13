@@ -42,7 +42,7 @@ public class SecurityConfig {
             .requestMatchers("/api/accounts/login", "/api/sach/all").permitAll()
             .requestMatchers("/api/docgia/chitietdocgia")
             .hasAuthority(Const.ROLE_USER)
-            .requestMatchers("/api/accounts/**", "/api/docgia/all", "/api/tacgia/**",
+            .requestMatchers("/api/accounts/**", "/api/docgia/**", "/api/tacgia/**",
                 "/api/nhaxuatban/**", "/api/theloai/**", "/api/thethuvien/**")
             .hasAuthority(Const.ROLE_ADMIN)
             .anyRequest().authenticated())

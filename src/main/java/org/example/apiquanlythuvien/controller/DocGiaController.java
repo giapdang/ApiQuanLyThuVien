@@ -1,11 +1,14 @@
 package org.example.apiquanlythuvien.controller;
 
 import lombok.AllArgsConstructor;
+import org.example.apiquanlythuvien.data.request.UpdateDocGiaAdminRequest;
 import org.example.apiquanlythuvien.service.docgia.DocGiaService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,5 +28,16 @@ public class DocGiaController {
   @GetMapping("/chitietdocgia")
   public ResponseEntity<?> getDocGiaById(@RequestParam Long accountId) {
     return ResponseEntity.ok(docGiaService.getDocGiaById(accountId));
+  }
+
+  @GetMapping("/admin/chitietdocgia")
+  public ResponseEntity<?> getDocGiaByDocGiaId(@RequestParam Long docGiaId) {
+    return ResponseEntity.ok(docGiaService.getDocGiaByDocGiaIdAdmin(docGiaId));
+  }
+
+  @PutMapping("/admin/updatedocgia")
+  public ResponseEntity<?> updateDocGiaAdmin(@RequestBody UpdateDocGiaAdminRequest updateDocGiaAdminRequest) {
+    docGiaService.updateDocGiaAdmin(updateDocGiaAdminRequest);
+    return ResponseEntity.ok("Cập nhật độc giả thành công");
   }
 }

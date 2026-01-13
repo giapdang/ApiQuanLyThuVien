@@ -3,8 +3,11 @@ package org.example.apiquanlythuvien.service.docgia;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.apiquanlythuvien.data.entity.DocGia;
+import org.example.apiquanlythuvien.data.request.UpdateDocGiaAdminRequest;
 import org.example.apiquanlythuvien.data.response.DocGiaResponseAdmin;
 import org.example.apiquanlythuvien.data.response.DocGiaResponseUser;
+import org.example.apiquanlythuvien.exception.NotFoundException;
 import org.example.apiquanlythuvien.mapper.DocGiaMapper;
 import org.example.apiquanlythuvien.responsitory.DocGiaRepository;
 import org.springframework.data.domain.Page;
@@ -31,5 +34,26 @@ public class DocGiaServiceImpl implements  DocGiaService {
   @Transactional
   public Optional<DocGiaResponseUser> getDocGiaById(Long accountId) {
     return docGiaRepository.findByAccountId(accountId);
+  }
+
+  @Override
+  @Transactional
+  public DocGiaResponseAdmin getDocGiaByDocGiaIdAdmin(Long docGiaId) {
+    return docGiaRepository.findById(docGiaId)
+        .map(docGiaMapper::toDocGiaResponse)
+        .orElseThrow(() -> new NotFoundException("Doc gia khong tim thấy id: " + docGiaId));
+  }
+
+  @Override
+  @Transactional
+  public void updateDocGiaAdmin(UpdateDocGiaAdminRequest updateDocGiaAdminRequest) {
+    Optional<DocGia> docGiaOptional = docGiaRepository.findById(updateDocGiaAdminRequest.getDocGiaId());
+    if (docGiaOptional.isPresent()) {
+      DocGia docGia = docGiaOptional.get();
+      docGiaMapper.updateDocGiaRequestMapper(updateDocGiaAdminRequest, docGia);
+      docGiaRepository.save(docGia);
+    } else {
+      throw new NotFoundException("Doc gia khong tim thấy id: " + updateDocGiaAdminRequest.getDocGiaId());
+    }
   }
 }
