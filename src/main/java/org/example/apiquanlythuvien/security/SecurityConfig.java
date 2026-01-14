@@ -40,7 +40,8 @@ public class SecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/accounts/login", "/api/sach/all").permitAll()
-            .requestMatchers("/api/docgia/chitietdocgia")
+            .requestMatchers("/api/docgia/chitietdocgia", "/api/sach/chitietsach",
+                "/api/bansaosach/danhsach","/api/sach/theloai","/api/cart/**")
             .hasAuthority(Const.ROLE_USER)
             .requestMatchers("/api/accounts/**", "/api/docgia/**", "/api/tacgia/**",
                 "/api/nhaxuatban/**", "/api/theloai/**", "/api/thethuvien/**")
