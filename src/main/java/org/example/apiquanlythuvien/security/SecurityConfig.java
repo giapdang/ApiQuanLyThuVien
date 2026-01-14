@@ -34,8 +34,7 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-    http.
-        csrf(csrf -> csrf.disable())
+    http.csrf(csrf -> csrf.disable())
         .cors(Customizer.withDefaults())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -46,7 +45,7 @@ public class SecurityConfig {
                 "/api/phieumuon/create", "/api/phieumuon/load")
             .hasAuthority(Const.ROLE_USER)
             .requestMatchers("/api/accounts/**", "/api/docgia/**", "/api/tacgia/**", "/api/tacgia/**",
-                "/api/nhaxuatban/**", "/api/theloai/**", "/api/linhvuc/**", "/api/thethuvien/**")
+                "/api/nhaxuatban/**", "/api/theloai/**", "/api/linhvuc/**", "/api/thethuvien/**", "/api/sach/admin/**")
             .hasAuthority(Const.ROLE_ADMIN)
             .anyRequest().authenticated())
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
