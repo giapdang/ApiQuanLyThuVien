@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.apiquanlythuvien.data.entity.TacGia;
 import org.example.apiquanlythuvien.data.request.CreateTacGiaAdminRequest;
+import org.example.apiquanlythuvien.data.request.UpdateTacGiaAdminRequest;
 import org.example.apiquanlythuvien.data.response.TacGiaAdminResponse;
 import org.example.apiquanlythuvien.mapper.TacGiaMapper;
 import org.example.apiquanlythuvien.responsitory.TacGiaRepository;
@@ -32,5 +33,20 @@ public class TacGiaServiceImpl implements TacGiaService {
   public void createTacGia(CreateTacGiaAdminRequest request) {
     TacGia tacGia = tacGiaMapper.toEntityTacGiaMapper(request);
     tacGiaRepository.save(tacGia);
+  }
+
+  @Override
+  public void updateTacGia(UpdateTacGiaAdminRequest request) {
+    TacGia tacGia = tacGiaRepository.findById(request.getTacGiaId())
+        .orElseThrow(() -> new RuntimeException("Tác giả không tồn tại"));
+    tacGiaMapper.updateTacGiaFromRequest(request, tacGia);
+    tacGiaRepository.save(tacGia);
+  }
+
+  @Override
+  public void deleteTacGia(Long tacGiaId) {
+    TacGia tacGia = tacGiaRepository.findById(tacGiaId)
+        .orElseThrow(() -> new RuntimeException("Tác giả không tồn tại"));
+    tacGiaRepository.delete(tacGia);
   }
 }

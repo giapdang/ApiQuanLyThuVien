@@ -45,8 +45,8 @@ public class SecurityConfig {
                 "/api/bansaosach/danhsach", "/api/sach/theloai", "/api/cart/**",
                 "/api/phieumuon/create", "/api/phieumuon/load")
             .hasAuthority(Const.ROLE_USER)
-            .requestMatchers("/api/accounts/**", "/api/docgia/**", "/api/tacgia/**",
-                "/api/nhaxuatban/**", "/api/theloai/**", "/api/thethuvien/**")
+            .requestMatchers("/api/accounts/**", "/api/docgia/**", "/api/tacgia/**", "/api/tacgia/**",
+                "/api/nhaxuatban/**", "/api/theloai/**", "/api/linhvuc/**", "/api/thethuvien/**")
             .hasAuthority(Const.ROLE_ADMIN)
             .anyRequest().authenticated())
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
