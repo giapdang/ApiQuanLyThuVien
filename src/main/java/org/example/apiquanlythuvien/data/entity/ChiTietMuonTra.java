@@ -28,7 +28,7 @@ public class ChiTietMuonTra {
   @Column(name = "chi_tiet_muon_tra_id", nullable = false)
   private Long chiTietMuonTraId;
 
-  @Column(name = "ngay_tra", nullable = false)
+  @Column(name = "ngay_tra", nullable = true)
   private Date ngayTra;
 
   @Column(name = "han_tra", nullable = false)

@@ -25,6 +25,7 @@ public class Const {
   public static final String PHIEUMUON_CANCELLED = "HUY";        // Hủy
   public static final String PHIEUMUON_BORROWED = "DANG_MUON";   // Đang mượn
   public static final String PHIEUMUON_RETURNED = "DA_TRA";      // (existing)
+  public static final String PHIEUMUON_TAT_CA = "TAT_CA";        // Tất cả (trang thai loc)
 
   // chi tiet phieu muon (loan detail) status
   public static final String PHIEUMUON_CT_PENDING = "DANG_CHO";   // Đang chờ

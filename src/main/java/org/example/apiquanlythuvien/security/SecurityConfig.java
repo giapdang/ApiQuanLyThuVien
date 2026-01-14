@@ -37,11 +37,13 @@ public class SecurityConfig {
     http.
         csrf(csrf -> csrf.disable())
         .cors(Customizer.withDefaults())
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/accounts/login", "/api/sach/all").permitAll()
             .requestMatchers("/api/docgia/chitietdocgia", "/api/sach/chitietsach",
-                "/api/bansaosach/danhsach","/api/sach/theloai","/api/cart/**")
+                "/api/bansaosach/danhsach", "/api/sach/theloai", "/api/cart/**",
+                "/api/phieumuon/create", "/api/phieumuon/load")
             .hasAuthority(Const.ROLE_USER)
             .requestMatchers("/api/accounts/**", "/api/docgia/**", "/api/tacgia/**",
                 "/api/nhaxuatban/**", "/api/theloai/**", "/api/thethuvien/**")
