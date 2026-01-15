@@ -1,14 +1,17 @@
 package org.example.apiquanlythuvien.service.cart;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.example.apiquanlythuvien.data.entity.BanSaoSach;
+import org.example.apiquanlythuvien.data.request.CartViewRequest;
 import org.example.apiquanlythuvien.data.response.CartResponse;
 import org.example.apiquanlythuvien.data.response.TacGiaResponse;
-import org.example.apiquanlythuvien.data.entity.BanSaoSach;
-import org.example.apiquanlythuvien.defaults.Const;
 import org.example.apiquanlythuvien.exception.NotFoundException;
 import org.example.apiquanlythuvien.responsitory.BanSaoSachRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,72 +21,57 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CartServiceImpl implements CartService {
 
-    private static final String CART_SESSION_KEY = "CART";
-    private final HttpSession httpSession;
     private final BanSaoSachRepository banSaoSachRepository;
 
     @Override
-    public void addToCart(Long banSaoSachId) {
+    @Transactional(readOnly = true)
+    public Page<CartResponse> getCart(CartViewRequest request, Pageable pageable) {
+        List<Long> banSaoSachIds = request.getSelectedBanSaoSachIds();
 
-        BanSaoSach banSaoSach = banSaoSachRepository.findById(banSaoSachId)
-            .orElseThrow(() -> new NotFoundException("Bản sao sách không tồn tại"));
-
-        // Kiểm tra trạng thái bản sao sách
-        if (Const.BANSACH_BORROWED.equals(banSaoSach.getTinhTrangBanSaoSach())) {
-            throw new IllegalStateException("Bản sao sách đã được mượn, không thể thêm vào giỏ");
+        // Nếu danh sách rỗng, trả về trang trống
+        if (banSaoSachIds == null || banSaoSachIds.isEmpty()) {
+            return new PageImpl<>(new ArrayList<>(), pageable, 0);
         }
 
-        if (!banSaoSachRepository.existsById(banSaoSachId)) {
-            throw new NotFoundException("Bản sao sách không tồn tại");
+        // Lấy tất cả bản sao sách theo IDs
+        List<BanSaoSach> allBanSaoSach = banSaoSachRepository.findAllById(banSaoSachIds);
+
+        // Kiểm tra nếu có ID không tồn tại
+        if (allBanSaoSach.size() != banSaoSachIds.size()) {
+            List<Long> foundIds = allBanSaoSach.stream()
+                .map(BanSaoSach::getBanSaoSachId)
+                .collect(Collectors.toList());
+
+            List<Long> notFoundIds = banSaoSachIds.stream()
+                .filter(id -> !foundIds.contains(id))
+                .collect(Collectors.toList());
+
+            throw new NotFoundException("Không tìm thấy bản sao sách với IDs: " + notFoundIds);
         }
 
-
-        List<Long> cart = getCartIds();
-
-        if (cart.contains(banSaoSachId)) {
-            throw new NotFoundException("Bản sao sách đã có trong giỏ");
-        }
-
-        cart.add(banSaoSachId);
-        httpSession.setAttribute(CART_SESSION_KEY, cart);
-    }
-
-    @Override
-    public List<CartResponse> getCart() {
-        List<Long> cartIds = getCartIds();
-
-        if (cartIds.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return cartIds.stream()
-            .map(banSaoSachRepository::findById)
-            .filter(opt -> opt.isPresent())
-            .map(opt -> opt.get())
-            .map(this::convertToCartResponse)
+        // Giữ nguyên thứ tự từ request
+        List<BanSaoSach> sortedBanSaoSach = banSaoSachIds.stream()
+            .map(id -> allBanSaoSach.stream()
+                .filter(b -> b.getBanSaoSachId().equals(id))
+                .findFirst()
+                .orElse(null))
+            .filter(b -> b != null)
             .collect(Collectors.toList());
-    }
 
-    @Override
-    public void removeFromCart(Long banSaoSachId) {
-        List<Long> cart = getCartIds();
-        cart.remove(banSaoSachId);
-        httpSession.setAttribute(CART_SESSION_KEY, cart);
-    }
+        // Tính toán pagination thủ công
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), sortedBanSaoSach.size());
 
-    @Override
-    public void clearCart() {
-        httpSession.removeAttribute(CART_SESSION_KEY);
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<Long> getCartIds() {
-        List<Long> cart = (List<Long>) httpSession.getAttribute(CART_SESSION_KEY);
-        if (cart == null) {
-            cart = new ArrayList<>();
-            httpSession.setAttribute(CART_SESSION_KEY, cart);
+        List<CartResponse> pageContent;
+        if (start >= sortedBanSaoSach.size()) {
+            pageContent = new ArrayList<>();
+        } else {
+            pageContent = sortedBanSaoSach.subList(start, end).stream()
+                .map(this::convertToCartResponse)
+                .collect(Collectors.toList());
         }
-        return cart;
+
+        return new PageImpl<>(pageContent, pageable, sortedBanSaoSach.size());
     }
 
     private CartResponse convertToCartResponse(BanSaoSach banSaoSach) {
@@ -91,12 +79,10 @@ public class CartServiceImpl implements CartService {
         response.setBanSaoSachId(banSaoSach.getBanSaoSachId());
         response.setTinhTrangBanSaoSach(banSaoSach.getTinhTrangBanSaoSach());
 
-        // Thông tin từ Sach
         response.setSachId(banSaoSach.getSach().getSachId());
         response.setTenSach(banSaoSach.getSach().getTenSach());
         response.setAnhBia(banSaoSach.getSach().getAnhBia());
 
-        // Danh sách tác giả
         List<TacGiaResponse> tacGiaList = banSaoSach.getSach().getSachTacGia()
             .stream()
             .map(sachTacGia -> {

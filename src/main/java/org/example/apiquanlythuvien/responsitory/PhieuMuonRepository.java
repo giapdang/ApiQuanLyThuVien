@@ -12,6 +12,10 @@ import org.springframework.stereotype.Repository;
 public interface PhieuMuonRepository extends JpaRepository<PhieuMuon, Long> {
 
   @Query("SELECT pm FROM PhieuMuon pm WHERE " +
+      "pm.theThuVien.theThuVienId = :theThuVienId AND " +
       "(:trangThai IS NULL OR :trangThai = 'TAT_CA' OR pm.trangThaiPhieuMuon = :trangThai)")
-  Page<PhieuMuon> findByTrangThaiPhieuMuonOrAll(@Param("trangThai") String trangThai, Pageable pageable);
+  Page<PhieuMuon> findByTheThuVienIdAndTrangThai(
+      @Param("theThuVienId") Long theThuVienId,
+      @Param("trangThai") String trangThai,
+      Pageable pageable);
 }

@@ -1,12 +1,10 @@
 package org.example.apiquanlythuvien.service.cart;
 
-import java.util.List;
+import org.example.apiquanlythuvien.data.request.CartViewRequest;
 import org.example.apiquanlythuvien.data.response.CartResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CartService {
-
-  void addToCart(Long banSaoSachId);
-  List<CartResponse> getCart();
-  void removeFromCart(Long banSaoSachId);
-  void clearCart();
+    Page<CartResponse> getCart(CartViewRequest request, Pageable pageable);
 }
