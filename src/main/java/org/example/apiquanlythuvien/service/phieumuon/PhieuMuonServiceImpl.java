@@ -3,9 +3,11 @@ package org.example.apiquanlythuvien.service.phieumuon;
 import lombok.RequiredArgsConstructor;
 import org.example.apiquanlythuvien.data.entity.*;
 import org.example.apiquanlythuvien.data.request.CreatePhieuMuonRequest;
+import org.example.apiquanlythuvien.data.response.ChiTietMuonTraResponse;
 import org.example.apiquanlythuvien.data.response.PhieuMuonResponse;
 import org.example.apiquanlythuvien.defaults.Const;
 import org.example.apiquanlythuvien.exception.NotFoundException;
+import org.example.apiquanlythuvien.mapper.ChiTietMuonTraMapper;
 import org.example.apiquanlythuvien.mapper.PhieuMuonMapper;
 import org.example.apiquanlythuvien.responsitory.*;
 import org.example.apiquanlythuvien.service.cart.CartService;
@@ -28,6 +30,8 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
   private final AccountRepository accountRepository;
   private final CartService cartService;
   private final PhieuMuonMapper phieuMuonMapper;
+  private final ChiTietMuonTraRepository chiTietMuonTraRepository;
+  private final ChiTietMuonTraMapper chiTietMuonTraMapper;
 
   @Override
   @Transactional
@@ -114,7 +118,6 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
 
     phieuMuonRepository.save(phieuMuon);
 
-
   }
 
   @Override
@@ -145,5 +148,13 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
     Page<PhieuMuon> phieuMuonPage = phieuMuonRepository.findByTheThuVienIdAndTrangThai(
         theThuVien.getTheThuVienId(), trangThai, pageable);
     return phieuMuonPage.map(phieuMuonMapper::toResponseMapper);
+  }
+
+  @Override
+  public List<ChiTietMuonTraResponse> getChiTietMuonTraByPhieuMuonId(Long phieuMuonId) {
+    List<ChiTietMuonTra> list = chiTietMuonTraRepository.findByPhieuMuonPhieuMuonId(phieuMuonId);
+    return list.stream()
+        .map(chiTietMuonTraMapper::toResponseMapper)
+        .toList();
   }
 }

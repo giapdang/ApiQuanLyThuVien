@@ -3,8 +3,10 @@ package org.example.apiquanlythuvien.controller;
 import lombok.AllArgsConstructor;
 import org.example.apiquanlythuvien.data.entity.PhieuMuon;
 import org.example.apiquanlythuvien.data.request.CreatePhieuMuonRequest;
+import org.example.apiquanlythuvien.data.response.ChiTietMuonTraResponse;
 import org.example.apiquanlythuvien.data.response.PhieuMuonResponse;
 import org.example.apiquanlythuvien.service.phieumuon.PhieuMuonService;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +40,12 @@ public class PhieuMuonController {
       @PageableDefault(sort = "ngayMuon", direction = Direction.DESC) Pageable pageable) {
     phieuMuonService.getPhieuMuonByTrangThai(trangThai, pageable);
     return ResponseEntity.ok(phieuMuonService.getPhieuMuonByTrangThai(trangThai, pageable));
+  }
+
+  @GetMapping("/chitietmuontra")
+  public ResponseEntity<List<ChiTietMuonTraResponse>> getChiTietMuonTra(
+      @RequestParam Long phieuMuonId) {
+    return ResponseEntity.ok(phieuMuonService.getChiTietMuonTraByPhieuMuonId(phieuMuonId));
   }
 
 }
