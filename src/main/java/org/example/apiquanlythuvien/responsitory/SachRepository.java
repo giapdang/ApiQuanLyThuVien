@@ -10,7 +10,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SachRepository extends JpaRepository<Sach, Long> {
 
-
   @Query("SELECT s FROM Sach s WHERE s.theLoai.theLoaiId = :theLoaiId")
-  Page<Sach> getAllSachByTheLoaiId(Long theLoaiId,Pageable pageable);
+  Page<Sach> getAllSachByTheLoaiId(Long theLoaiId, Pageable pageable);
+
+  @Query("SELECT DISTINCT s FROM Sach s " +
+      "LEFT JOIN s.sachTacGia stg " +
+      "LEFT JOIN stg.tacGia tg " +
+      "WHERE LOWER(s.tenSach) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+      "OR LOWER(s.nhaXuatBan.tenNhaXuatBan) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+      "OR LOWER(s.theLoai.tenTheLoai) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+      "OR LOWER(s.linhVuc.tenLinhVuc) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+      "OR LOWER(tg.tenTacGia) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+  Page<Sach> searchByKeyword(String keyword, Pageable pageable);
 }

@@ -23,4 +23,6 @@ public interface SachService {
   void updateSach(UpdateSachAdminRequest request);
 
   void deleteSach(Long sachId);
+
+  Page<SachResponse> searchSach(String keyword, Pageable pageable);
 }

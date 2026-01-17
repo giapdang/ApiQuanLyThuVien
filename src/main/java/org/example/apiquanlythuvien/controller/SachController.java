@@ -25,6 +25,13 @@ public class SachController {
     return ResponseEntity.ok(sachService.getAllSach(pageable));
   }
 
+  @GetMapping("/search")
+  public ResponseEntity<?> searchSach(
+      @RequestParam String keyword,
+      @PageableDefault(page = 0, size = 10, sort = "sachId", direction = Sort.Direction.DESC) Pageable pageable) {
+    return ResponseEntity.ok(sachService.searchSach(keyword, pageable));
+  }
+
   @GetMapping("/chitietsach")
   public ResponseEntity<?> getChiTietSachById(@RequestParam Long sachId) {
     return ResponseEntity.ok(sachService.getChiTietSachById(sachId));

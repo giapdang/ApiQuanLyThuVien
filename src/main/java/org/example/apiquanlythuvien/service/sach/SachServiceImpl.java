@@ -83,6 +83,13 @@ public class SachServiceImpl implements SachService {
 
   @Override
   @Transactional
+  public Page<SachResponse> searchSach(String keyword, Pageable pageable) {
+    return sachRepository.searchByKeyword(keyword, pageable)
+        .map(sachMapper::toResponse);
+  }
+
+  @Override
+  @Transactional
   public void deleteSach(Long sachId) {
     if (!sachRepository.existsById(sachId)) {
       throw new RuntimeException("Sach khong tim thay id: " + sachId);
