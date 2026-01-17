@@ -57,17 +57,17 @@ public class PhieuMuonController {
     return ResponseEntity.ok(phieuMuonService.getChiTietMuonTraByPhieuMuonId(phieuMuonId));
   }
 
-  @PostMapping("/admin/update-status/{id}")
+  @PostMapping("/admin/update-phieumuon-status")
   public ResponseEntity<?> updatePhieuMuonStatus(
-      @PathVariable Long id,
+      @RequestParam Long id,
       @RequestBody UpdatePhieuMuonStatusRequest request) {
     phieuMuonService.updatePhieuMuonStatus(id, request.getTrangThai());
     return ResponseEntity.ok("Cập nhật trạng thái phiếu mượn thành công");
   }
 
-  @PostMapping("/admin/update-chitiet-status/{id}")
+  @PostMapping("/admin/update-chitiet-status")
   public ResponseEntity<?> updateChiTietStatus(
-      @PathVariable Long id,
+      @RequestParam Long id,
       @RequestBody UpdateChiTietStatusRequest request) {
     phieuMuonService.updateChiTietStatus(id, request.getTinhTrang());
     return ResponseEntity.ok("Cập nhật tình trạng chi tiết mượn trả thành công");
