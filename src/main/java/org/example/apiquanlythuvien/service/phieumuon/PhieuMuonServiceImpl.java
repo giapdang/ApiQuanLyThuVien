@@ -194,4 +194,137 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
         .map(chiTietMuonTraMapper::toResponseMapper)
         .toList();
   }
+
+  @Override
+  @Transactional
+  public void updatePhieuMuonStatus(Long phieuMuonId, String status) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null || !authentication.isAuthenticated()) {
+      throw new RuntimeException("Chưa đăng nhập");
+    }
+
+    boolean isAdmin = authentication.getAuthorities().stream()
+        .anyMatch(a -> a.getAuthority().equals(Const.ROLE_ADMIN));
+
+    if (!isAdmin) {
+      throw new RuntimeException("Không có quyền thực hiện thao tác này");
+    }
+
+    PhieuMuon phieuMuon = phieuMuonRepository.findById(phieuMuonId)
+        .orElseThrow(() -> new NotFoundException("Không tìm thấy phiếu mượn"));
+
+    // Cascading logic based on new status
+    List<ChiTietMuonTra> chiTietList = chiTietMuonTraRepository
+        .findByPhieuMuonPhieuMuonId(phieuMuonId);
+
+    switch (status) {
+      case Const.PHIEUMUON_BORROWED: // DANG_MUON - Admin approves/hands over
+        for (ChiTietMuonTra chiTiet : chiTietList) {
+          if (Const.PHIEUMUON_CT_PENDING.equals(chiTiet.getTinhTrangKhiTra())) {
+            chiTiet.setTinhTrangKhiTra(Const.PHIEUMUON_CT_BORROWED);
+            chiTietMuonTraRepository.save(chiTiet);
+          }
+        }
+        break;
+
+      case Const.PHIEUMUON_CANCELLED: // HUY - Restore book availability
+        for (ChiTietMuonTra chiTiet : chiTietList) {
+          BanSaoSach banSaoSach = chiTiet.getBanSaoSach();
+          banSaoSach.setTrangThaiBanSaoSach(Const.BANSACH_AVAILABLE);
+          banSaoSachRepository.save(banSaoSach);
+        }
+        break;
+
+      default:
+        break;
+    }
+
+    phieuMuon.setTrangThaiPhieuMuon(status);
+    phieuMuonRepository.save(phieuMuon);
+  }
+
+  @Override
+  @Transactional
+  public void updateChiTietStatus(Long chiTietId, String status) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null || !authentication.isAuthenticated()) {
+      throw new RuntimeException("Chưa đăng nhập");
+    }
+
+    boolean isAdmin = authentication.getAuthorities().stream()
+        .anyMatch(a -> a.getAuthority().equals(Const.ROLE_ADMIN));
+
+    if (!isAdmin) {
+      throw new RuntimeException("Không có quyền thực hiện thao tác này");
+    }
+
+    ChiTietMuonTra chiTiet = chiTietMuonTraRepository.findById(chiTietId)
+        .orElseThrow(() -> new NotFoundException("Không tìm thấy chi tiết mượn trả"));
+
+    BanSaoSach banSaoSach = chiTiet.getBanSaoSach();
+    BigDecimal giaTien = banSaoSach.getSach().getGiaTien();
+
+    // Calculate fines and update BanSaoSach based on new status
+    switch (status) {
+      case Const.PHIEUMUON_CT_RETURNED: // DA_TRA
+        chiTiet.setNgayTra(new Date());
+        // Calculate overdue fine if applicable
+        Date today = new Date();
+        if (chiTiet.getHanTra().before(today)) {
+          long diffMillis = today.getTime() - chiTiet.getHanTra().getTime();
+          long overdueDays = diffMillis / (1000 * 60 * 60 * 24);
+          if (overdueDays > 0) {
+            // Fine = 10% of book price * overdue days
+            BigDecimal dailyFine = giaTien.multiply(new BigDecimal("0.10"));
+            chiTiet.setTienPhat(dailyFine.multiply(BigDecimal.valueOf(overdueDays)));
+          } else {
+            chiTiet.setTienPhat(BigDecimal.ZERO);
+          }
+        } else {
+          chiTiet.setTienPhat(BigDecimal.ZERO);
+        }
+        banSaoSach.setTrangThaiBanSaoSach(Const.BANSACH_AVAILABLE);
+        break;
+
+      case Const.PHIEUMUON_CT_DAMAGED: // HU_HONG
+        chiTiet.setNgayTra(new Date());
+        chiTiet.setTienPhat(giaTien); // Full book price
+        banSaoSach.setTrangThaiBanSaoSach(Const.BANSACH_DAMAGED);
+        break;
+
+      case Const.PHIEUMUON_CT_LOST: // MAT
+        chiTiet.setNgayTra(new Date());
+        chiTiet.setTienPhat(giaTien); // Full book price
+        banSaoSach.setTrangThaiBanSaoSach(Const.BANSACH_LOST);
+        break;
+
+      default:
+        // For other statuses (DANG_CHO, DANG_MUON, QUA_HAN), just update status
+        break;
+    }
+
+    chiTiet.setTinhTrangKhiTra(status);
+    banSaoSachRepository.save(banSaoSach);
+    chiTietMuonTraRepository.save(chiTiet);
+
+    // Check if all details are terminal -> auto-complete PhieuMuon
+    checkAndCompletePhieuMuon(chiTiet.getPhieuMuon());
+  }
+
+  private void checkAndCompletePhieuMuon(PhieuMuon phieuMuon) {
+    List<ChiTietMuonTra> allDetails = chiTietMuonTraRepository
+        .findByPhieuMuonPhieuMuonId(phieuMuon.getPhieuMuonId());
+
+    boolean allTerminal = allDetails.stream().allMatch(detail -> {
+      String s = detail.getTinhTrangKhiTra();
+      return Const.PHIEUMUON_CT_RETURNED.equals(s)
+          || Const.PHIEUMUON_CT_DAMAGED.equals(s)
+          || Const.PHIEUMUON_CT_LOST.equals(s);
+    });
+
+    if (allTerminal) {
+      phieuMuon.setTrangThaiPhieuMuon(Const.PHIEUMUON_COMPLETED);
+      phieuMuonRepository.save(phieuMuon);
+    }
+  }
 }

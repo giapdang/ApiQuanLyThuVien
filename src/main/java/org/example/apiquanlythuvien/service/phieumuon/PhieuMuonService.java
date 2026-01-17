@@ -16,4 +16,8 @@ public interface PhieuMuonService {
     Page<PhieuMuonResponse> getAllPhieuMuon(String trangThai, Pageable pageable);
 
     List<ChiTietMuonTraResponse> getChiTietMuonTraByPhieuMuonId(Long phieuMuonId);
+
+    void updatePhieuMuonStatus(Long phieuMuonId, String status);
+
+    void updateChiTietStatus(Long chiTietId, String status);
 }
