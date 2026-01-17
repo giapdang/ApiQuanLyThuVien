@@ -38,8 +38,14 @@ public class PhieuMuonController {
   public ResponseEntity<?> getPhieuMuon(
       @RequestParam(required = false, defaultValue = "TAT_CA") String trangThai,
       @PageableDefault(sort = "ngayMuon", direction = Direction.DESC) Pageable pageable) {
-    phieuMuonService.getPhieuMuonByTrangThai(trangThai, pageable);
     return ResponseEntity.ok(phieuMuonService.getPhieuMuonByTrangThai(trangThai, pageable));
+  }
+
+  @GetMapping("/admin/load")
+  public ResponseEntity<?> getAllPhieuMuon(
+      @RequestParam(required = false, defaultValue = "TAT_CA") String trangThai,
+      @PageableDefault(sort = "ngayMuon", direction = Direction.DESC) Pageable pageable) {
+    return ResponseEntity.ok(phieuMuonService.getAllPhieuMuon(trangThai, pageable));
   }
 
   @GetMapping("/chitietmuontra")

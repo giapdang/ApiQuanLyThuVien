@@ -13,5 +13,7 @@ public interface PhieuMuonService {
 
     Page<PhieuMuonResponse> getPhieuMuonByTrangThai(String trangThai, Pageable pageable);
 
+    Page<PhieuMuonResponse> getAllPhieuMuon(String trangThai, Pageable pageable);
+
     List<ChiTietMuonTraResponse> getChiTietMuonTraByPhieuMuonId(Long phieuMuonId);
 }

@@ -151,7 +151,44 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
   }
 
   @Override
+  public Page<PhieuMuonResponse> getAllPhieuMuon(String trangThai, Pageable pageable) {
+    Page<PhieuMuon> phieuMuonPage = phieuMuonRepository.findByTrangThai(trangThai, pageable);
+    return phieuMuonPage.map(phieuMuonMapper::toResponseMapper);
+  }
+
+  @Override
   public List<ChiTietMuonTraResponse> getChiTietMuonTraByPhieuMuonId(Long phieuMuonId) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null || !authentication.isAuthenticated()) {
+      throw new RuntimeException("Chưa đăng nhập");
+    }
+
+    boolean isAdmin = authentication.getAuthorities().stream()
+        .anyMatch(a -> a.getAuthority().equals(Const.ROLE_ADMIN));
+
+    if (!isAdmin) {
+      String username = authentication.getName();
+      Account account = accountRepository.findByUsername(username)
+          .orElseThrow(() -> new NotFoundException("Không tìm thấy tài khoản"));
+
+      DocGia docGia = account.getDocGia();
+      if (docGia == null) {
+        throw new NotFoundException("Tài khoản chưa có thông tin độc giả");
+      }
+
+      TheThuVien theThuVien = docGia.getTheThuVien();
+      if (theThuVien == null) {
+        throw new NotFoundException("Độc giả chưa có thẻ thư viện");
+      }
+
+      PhieuMuon phieuMuon = phieuMuonRepository.findById(phieuMuonId)
+          .orElseThrow(() -> new NotFoundException("Không tìm thấy phiếu mượn"));
+
+      if (!phieuMuon.getTheThuVien().getTheThuVienId().equals(theThuVien.getTheThuVienId())) {
+        throw new RuntimeException("Không có quyền truy cập phiếu mượn này");
+      }
+    }
+
     List<ChiTietMuonTra> list = chiTietMuonTraRepository.findByPhieuMuonPhieuMuonId(phieuMuonId);
     return list.stream()
         .map(chiTietMuonTraMapper::toResponseMapper)

@@ -45,7 +45,8 @@ public class SecurityConfig {
                 "/api/phieumuon/create", "/api/phieumuon/load")
             .hasAuthority(Const.ROLE_USER)
             .requestMatchers("/api/accounts/**", "/api/docgia/**", "/api/tacgia/**", "/api/tacgia/**",
-                "/api/nhaxuatban/**", "/api/theloai/**", "/api/linhvuc/**", "/api/thethuvien/**", "/api/sach/admin/**")
+                "/api/nhaxuatban/**", "/api/theloai/**", "/api/linhvuc/**", "/api/thethuvien/**",
+                "/api/sach/admin/**", "/api/phieumuon/admin/**")
             .hasAuthority(Const.ROLE_ADMIN)
             .anyRequest().authenticated())
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
