@@ -16,13 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/phieumuon")
@@ -57,19 +51,19 @@ public class PhieuMuonController {
     return ResponseEntity.ok(phieuMuonService.getChiTietMuonTraByPhieuMuonId(phieuMuonId));
   }
 
-  @PostMapping("/admin/update-phieumuon-status")
+  @PutMapping("/admin/update-phieumuon-status")
   public ResponseEntity<?> updatePhieuMuonStatus(
-      @RequestParam Long id,
+      @RequestParam Long phieuMuonId,
       @RequestBody UpdatePhieuMuonStatusRequest request) {
-    phieuMuonService.updatePhieuMuonStatus(id, request.getTrangThai());
+    phieuMuonService.updatePhieuMuonStatus(phieuMuonId, request.getTrangThai());
     return ResponseEntity.ok("Cập nhật trạng thái phiếu mượn thành công");
   }
 
-  @PostMapping("/admin/update-chitiet-status")
+  @PutMapping ("/admin/update-chitiet-status")
   public ResponseEntity<?> updateChiTietStatus(
-      @RequestParam Long id,
+      @RequestParam Long chiTietPhieuMuonId,
       @RequestBody UpdateChiTietStatusRequest request) {
-    phieuMuonService.updateChiTietStatus(id, request.getTinhTrang());
+    phieuMuonService.updateChiTietStatus(chiTietPhieuMuonId, request.getTinhTrang());
     return ResponseEntity.ok("Cập nhật tình trạng chi tiết mượn trả thành công");
   }
 
