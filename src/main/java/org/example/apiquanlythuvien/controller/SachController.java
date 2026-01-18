@@ -44,9 +44,9 @@ public class SachController {
   }
 
   @GetMapping("/theloai")
-  public ResponseEntity<?> getAllSachByTheLoaiId(@RequestParam Long theLoaiId,
+  public ResponseEntity<?> getAllSachByTheLoaiId(@RequestParam String tenTheLoai,
       @PageableDefault(page = 0, size = 10) Pageable pageable) {
-    return ResponseEntity.ok(sachService.getAllSachByTheLoaiId(theLoaiId, pageable));
+    return ResponseEntity.ok(sachService.getAllSachByTenTheLoai(tenTheLoai, pageable));
   }
 
   @PostMapping("/admin/create")

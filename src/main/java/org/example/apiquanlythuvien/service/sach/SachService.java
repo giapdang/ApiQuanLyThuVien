@@ -14,7 +14,7 @@ public interface SachService {
 
   ChiTietSachResponse getChiTietSachById(Long sachId);
 
-  Page<SachResponse> getAllSachByTheLoaiId(Long theLoaiId, Pageable pageable);
+  Page<SachResponse> getAllSachByTenTheLoai(String tenTheLoai, Pageable pageable);
 
   Page<SachAdminResponse> getAllSachAdmin(Pageable pageable);
 

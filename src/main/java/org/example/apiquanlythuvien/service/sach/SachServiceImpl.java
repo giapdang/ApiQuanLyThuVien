@@ -44,8 +44,8 @@ public class SachServiceImpl implements SachService {
 
   @Override
   @Transactional
-  public Page<SachResponse> getAllSachByTheLoaiId(Long theLoaiId, Pageable pageable) {
-    return sachRepository.getAllSachByTheLoaiId(theLoaiId, pageable)
+  public Page<SachResponse> getAllSachByTenTheLoai(String tenTheLoai, Pageable pageable) {
+    return sachRepository.getAllSachByTenTheLoai(tenTheLoai, pageable)
         .map(sachMapper::toResponse);
   }
 

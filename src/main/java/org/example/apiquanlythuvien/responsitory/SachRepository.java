@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SachRepository extends JpaRepository<Sach, Long> {
 
-  @Query("SELECT s FROM Sach s WHERE s.theLoai.theLoaiId = :theLoaiId")
-  Page<Sach> getAllSachByTheLoaiId(Long theLoaiId, Pageable pageable);
+  @Query("SELECT s FROM Sach s WHERE s.theLoai.tenTheLoai = :tenTheLoai")
+  Page<Sach> getAllSachByTenTheLoai(String tenTheLoai, Pageable pageable);
 
   @Query("SELECT DISTINCT s FROM Sach s " +
       "LEFT JOIN s.sachTacGia stg " +
