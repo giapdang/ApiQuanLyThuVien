@@ -327,4 +327,11 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
       phieuMuonRepository.save(phieuMuon);
     }
   }
+
+  @Override
+  public Page<PhieuMuonResponse> searchPhieuMuonAdmin(String keyword, String trangThai, Pageable pageable) {
+    Page<PhieuMuon> phieuMuonPage = phieuMuonRepository.searchPhieuMuonAdmin(
+        keyword, trangThai, pageable);
+    return phieuMuonPage.map(phieuMuonMapper::toResponseMapper);
+  }
 }

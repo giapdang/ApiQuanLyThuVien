@@ -45,6 +45,14 @@ public class PhieuMuonController {
     return ResponseEntity.ok(phieuMuonService.getAllPhieuMuon(trangThai, pageable));
   }
 
+  @GetMapping("/admin/search")
+  public ResponseEntity<?> searchPhieuMuonAdmin(
+      @RequestParam(required = false) String keyword,
+      @RequestParam(required = false, defaultValue = "TAT_CA") String trangThai,
+      @PageableDefault(sort = "ngayMuon", direction = Direction.DESC) Pageable pageable) {
+    return ResponseEntity.ok(phieuMuonService.searchPhieuMuonAdmin(keyword, trangThai, pageable));
+  }
+
   @GetMapping("/chitietmuontra")
   public ResponseEntity<List<ChiTietMuonTraResponse>> getChiTietMuonTra(
       @RequestParam Long phieuMuonId) {
@@ -59,7 +67,7 @@ public class PhieuMuonController {
     return ResponseEntity.ok("Cập nhật trạng thái phiếu mượn thành công");
   }
 
-  @PutMapping ("/admin/update-chitiet-status")
+  @PutMapping("/admin/update-chitiet-status")
   public ResponseEntity<?> updateChiTietStatus(
       @RequestParam Long chiTietPhieuMuonId,
       @RequestBody UpdateChiTietStatusRequest request) {

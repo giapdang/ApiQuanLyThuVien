@@ -20,4 +20,6 @@ public interface PhieuMuonService {
     void updatePhieuMuonStatus(Long phieuMuonId, String status);
 
     void updateChiTietStatus(Long chiTietId, String status);
+
+    Page<PhieuMuonResponse> searchPhieuMuonAdmin(String keyword, String trangThai, Pageable pageable);
 }
