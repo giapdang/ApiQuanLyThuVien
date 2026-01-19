@@ -82,7 +82,8 @@ public class SecurityConfig {
                   "/api/linhvuc/**",
                   "/api/thethuvien/**",
                   "/api/sach/admin/**",
-                  "/api/phieumuon/admin/**"
+                  "/api/phieumuon/admin/**",
+                  "/api/images/**"
               ).hasAuthority(Const.ROLE_ADMIN)
 
               // User endpoints
