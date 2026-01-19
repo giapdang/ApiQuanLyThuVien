@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface DocGiaService {
 
-  Page<DocGiaResponseAdmin> getAllDocGia(Pageable pageable);
+  Page<DocGiaResponseAdmin> getAllDocGia(String trangThaiDocGia, Pageable pageable);
 
   Optional<DocGiaResponseUser> getDocGiaById(Long accountId);
 

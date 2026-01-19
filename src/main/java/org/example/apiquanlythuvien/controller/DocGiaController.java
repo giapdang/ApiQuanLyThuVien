@@ -21,8 +21,10 @@ public class DocGiaController {
   private final DocGiaService docGiaService;
 
   @GetMapping("/all")
-  public ResponseEntity<?> getAllDocGia(@PageableDefault(page = 0, size = 10) Pageable pageable) {
-    return ResponseEntity.ok(docGiaService.getAllDocGia(pageable));
+  public ResponseEntity<?> getAllDocGia(
+      @RequestParam(required = false, defaultValue = "TAT_CA") String trangThaiDocGia,
+      @PageableDefault(page = 0, size = 10) Pageable pageable) {
+    return ResponseEntity.ok(docGiaService.getAllDocGia(trangThaiDocGia, pageable));
   }
 
   @GetMapping("/chitietdocgia")

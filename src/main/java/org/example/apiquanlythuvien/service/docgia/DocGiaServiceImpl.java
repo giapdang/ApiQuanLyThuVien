@@ -18,15 +18,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class DocGiaServiceImpl implements  DocGiaService {
+public class DocGiaServiceImpl implements DocGiaService {
 
   private final DocGiaRepository docGiaRepository;
   private final DocGiaMapper docGiaMapper;
 
   @Override
   @Transactional
-  public Page<DocGiaResponseAdmin> getAllDocGia(Pageable pageable) {
-    return docGiaRepository.findAll(pageable)
+  public Page<DocGiaResponseAdmin> getAllDocGia(String trangThaiDocGia, Pageable pageable) {
+    if (trangThaiDocGia == null || trangThaiDocGia.equals("TAT_CA")) {
+      return docGiaRepository.findAll(pageable)
+          .map(docGiaMapper::toDocGiaResponse);
+    }
+    return docGiaRepository.findAllByTrangThaiDocGia(trangThaiDocGia, pageable)
         .map(docGiaMapper::toDocGiaResponse);
   }
 

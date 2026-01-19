@@ -3,6 +3,8 @@ package org.example.apiquanlythuvien.responsitory;
 import java.util.Optional;
 import org.example.apiquanlythuvien.data.entity.DocGia;
 import org.example.apiquanlythuvien.data.response.DocGiaResponseUser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,4 +19,6 @@ public interface DocGiaRepository extends JpaRepository<DocGia, Long> {
       "FROM DocGia d LEFT JOIN d.theThuVien t " +
       "WHERE d.account.accountId = :accountId")
   Optional<DocGiaResponseUser> findByAccountId(@Param("accountId") Long accountId);
+
+  Page<DocGia> findAllByTrangThaiDocGia(String trangThaiDocGia, Pageable pageable);
 }
