@@ -14,6 +14,7 @@ public interface TheThuVienRepository extends JpaRepository<TheThuVien, Long> {
   @Query("SELECT new org.example.apiquanlythuvien.data.response.ThethuVienAdminResponse(" +
       "t.theThuVienId, t.ngayHetHan, t.trangThai, t.soLuongSachDuocMuon, t.ngayCap, d.tenDocGia) " +
       "FROM TheThuVien t " +
-      "JOIN t.docGia d")
-  Page<ThethuVienAdminResponse> findAllTheThuVienAdmin(Pageable pageable);
+      "JOIN t.docGia d " +
+      "WHERE (:trangThai IS NULL OR t.trangThai = :trangThai)")
+  Page<ThethuVienAdminResponse> findAllTheThuVienAdmin(String trangThai, Pageable pageable);
 }

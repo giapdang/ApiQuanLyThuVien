@@ -1,6 +1,5 @@
 package org.example.apiquanlythuvien.service.thethuvien;
 
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.apiquanlythuvien.data.entity.TheThuVien;
@@ -22,8 +21,8 @@ public class TheThuVienServiceImpl implements TheThuVienService {
   private final TheThuVienRepository theThuVienRepository;
 
   @Override
-  public Page<ThethuVienAdminResponse> getAllTheThuVien(Pageable pageable) {
-    return theThuVienRepository.findAllTheThuVienAdmin(pageable);
+  public Page<ThethuVienAdminResponse> getAllTheThuVien(String trangThai, Pageable pageable) {
+    return theThuVienRepository.findAllTheThuVienAdmin(trangThai, pageable);
   }
 
   @Override

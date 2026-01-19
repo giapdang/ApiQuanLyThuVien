@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface TheThuVienService {
 
-  Page<ThethuVienAdminResponse> getAllTheThuVien(Pageable pageable);
+  Page<ThethuVienAdminResponse> getAllTheThuVien(String trangThai, Pageable pageable);
 
   void updateTheThuVien(UpdateTheThuVienRequest request);
 }

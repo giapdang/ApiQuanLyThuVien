@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,8 +21,10 @@ public class TheThuVienController {
   private final TheThuVienService theThuVienService;
 
   @GetMapping("/all")
-  public ResponseEntity<?> getAllTheThuVien(Pageable pageable) {
-    return ResponseEntity.ok(theThuVienService.getAllTheThuVien(pageable));
+  public ResponseEntity<?> getAllTheThuVien(
+      @RequestParam(required = false) String trangThai,
+      Pageable pageable) {
+    return ResponseEntity.ok(theThuVienService.getAllTheThuVien(trangThai, pageable));
   }
 
   @PutMapping("/update")
