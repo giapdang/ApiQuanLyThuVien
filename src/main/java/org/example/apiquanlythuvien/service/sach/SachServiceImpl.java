@@ -51,8 +51,8 @@ public class SachServiceImpl implements SachService {
 
   @Override
   @Transactional
-  public Page<SachAdminResponse> getAllSachAdmin(Pageable pageable) {
-    return sachRepository.findAll(pageable)
+  public Page<SachAdminResponse> getAllSachAdmin(String trangThaiBanSaoSach, Pageable pageable) {
+    return sachRepository.findAllAdmin(trangThaiBanSaoSach, pageable)
         .map(sachMapper::toAdminResponse);
   }
 
@@ -86,6 +86,13 @@ public class SachServiceImpl implements SachService {
   public Page<SachResponse> searchSach(String keyword, Pageable pageable) {
     return sachRepository.searchByKeyword(keyword, pageable)
         .map(sachMapper::toResponse);
+  }
+
+  @Override
+  @Transactional
+  public Page<SachAdminResponse> searchSachAdmin(String keyword, String trangThaiBanSaoSach, Pageable pageable) {
+    return sachRepository.searchByKeywordAdmin(keyword, trangThaiBanSaoSach, pageable)
+        .map(sachMapper::toAdminResponse);
   }
 
   @Override

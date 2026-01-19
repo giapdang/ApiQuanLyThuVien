@@ -16,7 +16,7 @@ public interface SachService {
 
   Page<SachResponse> getAllSachByTenTheLoai(String tenTheLoai, Pageable pageable);
 
-  Page<SachAdminResponse> getAllSachAdmin(Pageable pageable);
+  Page<SachAdminResponse> getAllSachAdmin(String trangThaiBanSaoSach, Pageable pageable);
 
   void createSach(CreateSachAdminRequest request);
 
@@ -25,4 +25,6 @@ public interface SachService {
   void deleteSach(Long sachId);
 
   Page<SachResponse> searchSach(String keyword, Pageable pageable);
+
+  Page<SachAdminResponse> searchSachAdmin(String keyword, String trangThaiBanSaoSach, Pageable pageable);
 }

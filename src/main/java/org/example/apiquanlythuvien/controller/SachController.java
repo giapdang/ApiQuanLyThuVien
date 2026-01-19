@@ -32,6 +32,14 @@ public class SachController {
     return ResponseEntity.ok(sachService.searchSach(keyword, pageable));
   }
 
+  @GetMapping("/admin/search")
+  public ResponseEntity<?> searchSachAdmin(
+      @RequestParam String keyword,
+      @RequestParam(required = false) String trangThaiBanSaoSach,
+      @PageableDefault(page = 0, size = 10, sort = "sachId", direction = Sort.Direction.DESC) Pageable pageable) {
+    return ResponseEntity.ok(sachService.searchSachAdmin(keyword, trangThaiBanSaoSach, pageable));
+  }
+
   @GetMapping("/chitietsach")
   public ResponseEntity<?> getChiTietSachById(@RequestParam Long sachId) {
     return ResponseEntity.ok(sachService.getChiTietSachById(sachId));
@@ -39,8 +47,9 @@ public class SachController {
 
   @GetMapping("/admin/all")
   public ResponseEntity<?> getAllSachAdmin(
+      @RequestParam(required = false) String trangThaiBanSaoSach,
       @PageableDefault(page = 0, size = 10, sort = "sachId", direction = Sort.Direction.DESC) Pageable pageable) {
-    return ResponseEntity.ok(sachService.getAllSachAdmin(pageable));
+    return ResponseEntity.ok(sachService.getAllSachAdmin(trangThaiBanSaoSach, pageable));
   }
 
   @GetMapping("/theloai")
