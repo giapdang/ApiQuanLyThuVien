@@ -12,7 +12,7 @@ public class Const {
   public static final String THETHUVIEN_ACTIVE = "HOAT_DONG";
   public static final String THETHUVIEN_INACTIVE = "VO_HIEU_HOA";
 
-  // ban sao sach status
+  // ban sao sach trang thai
   public static final String BANSACH_AVAILABLE = "CON";
   public static final String BANSACH_BORROWED = "DA_MUON";
   public static final String BANSACH_DAMAGED = "HU_HONG";
