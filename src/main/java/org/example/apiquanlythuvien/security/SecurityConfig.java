@@ -32,26 +32,71 @@ public class SecurityConfig {
     return config.getAuthenticationManager();
   }
 
+//  @Bean
+//  public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+//    http.csrf(csrf -> csrf.disable())
+//        .cors(Customizer.withDefaults())
+//        .sessionManagement(
+//            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//        .authorizeHttpRequests(auth -> auth
+//            .requestMatchers("/api/accounts/login", "/api/sach/all", "/api/sach/search", "/api/sach/chitietsach",
+//                "/api/bansaosach/danhsach", "/api/sach/theloai")
+//            .permitAll()
+//            .requestMatchers("/api/docgia/chitietdocgia", "/api/sach/theloai", "/api/cart/**",
+//                "/api/phieumuon/create", "/api/phieumuon/load")
+//            .hasAuthority(Const.ROLE_USER)
+//            .requestMatchers("/api/accounts/**", "/api/docgia/**", "/api/tacgia/**", "/api/tacgia/**",
+//                "/api/nhaxuatban/**", "/api/theloai/**", "/api/linhvuc/**", "/api/thethuvien/**",
+//                "/api/sach/admin/**", "/api/phieumuon/admin/**")
+//            .hasAuthority(Const.ROLE_ADMIN)
+//            .anyRequest().authenticated())
+//        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//
+//    return http.build();
+//  }
+
   @Bean
   public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.disable())
-        .cors(Customizer.withDefaults())
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/accounts/login", "/api/sach/all", "/api/sach/search", "/api/sach/chitietsach",
-                "/api/bansaosach/danhsach", "/api/sach/theloai")
-            .permitAll()
-            .requestMatchers("/api/docgia/chitietdocgia", "/api/sach/theloai", "/api/cart/**",
-                "/api/phieumuon/create", "/api/phieumuon/load")
-            .hasAuthority(Const.ROLE_USER)
-            .requestMatchers("/api/accounts/**", "/api/docgia/**", "/api/tacgia/**", "/api/tacgia/**",
-                "/api/nhaxuatban/**", "/api/theloai/**", "/api/linhvuc/**", "/api/thethuvien/**",
-                "/api/sach/admin/**", "/api/phieumuon/admin/**")
-            .hasAuthority(Const.ROLE_ADMIN)
-            .anyRequest().authenticated())
-        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+      http.csrf(csrf -> csrf.disable())
+          .cors(Customizer.withDefaults())
+          .sessionManagement(
+              session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+          .authorizeHttpRequests(auth -> auth
+              // Public endpoints - không cần đăng nhập
+              .requestMatchers(
+                  "/api/accounts/login",
+                  "/api/sach/all",
+                  "/api/sach/search",
+                  "/api/sach/chitietsach",
+                  "/api/sach/theloai",
+                  "/api/bansaosach/danhsach"
+              ).permitAll()
 
-    return http.build();
+              // Admin endpoints - đặt trước để ưu tiên
+              .requestMatchers(
+                  "/api/accounts/**",
+                  "/api/docgia/admin/**",
+                  "/api/tacgia/**",
+                  "/api/nhaxuatban/**",
+                  "/api/theloai/**",
+                  "/api/linhvuc/**",
+                  "/api/thethuvien/**",
+                  "/api/sach/admin/**",
+                  "/api/phieumuon/admin/**"
+              ).hasAuthority(Const.ROLE_ADMIN)
+
+              // User endpoints
+              .requestMatchers(
+                  "/api/docgia/chitietdocgia",
+                  "/api/cart/**",
+                  "/api/phieumuon/create",
+                  "/api/phieumuon/load"
+              ).hasAuthority(Const.ROLE_USER)
+
+              // Các request còn lại cần authentication
+              .anyRequest().authenticated())
+          .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+      return http.build();
   }
 }
