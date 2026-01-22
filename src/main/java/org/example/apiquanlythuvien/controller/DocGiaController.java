@@ -1,5 +1,7 @@
 package org.example.apiquanlythuvien.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.example.apiquanlythuvien.data.request.UpdateDocGiaAdminRequest;
 import org.example.apiquanlythuvien.service.docgia.DocGiaService;
@@ -41,5 +43,13 @@ public class DocGiaController {
   public ResponseEntity<?> updateDocGiaAdmin(@RequestBody UpdateDocGiaAdminRequest updateDocGiaAdminRequest) {
     docGiaService.updateDocGiaAdmin(updateDocGiaAdminRequest);
     return ResponseEntity.ok("Cập nhật độc giả thành công");
+  }
+
+  @GetMapping("/admin/count")
+  public ResponseEntity<?> countDocGia() {
+    long count = docGiaService.countDocGia();
+    Map<String,Long> response = new HashMap<>();
+    response.put("totalDocGia", count);
+    return ResponseEntity.ok(response);
   }
 }

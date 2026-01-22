@@ -22,4 +22,8 @@ public interface PhieuMuonService {
     void updateChiTietStatus(Long chiTietId, String status);
 
     Page<PhieuMuonResponse> searchPhieuMuonAdmin(String keyword, String trangThai, Pageable pageable);
+
+    long countPhieuMuonDangMuon();
+
+    long countPhieuMuonQuaHan();
 }

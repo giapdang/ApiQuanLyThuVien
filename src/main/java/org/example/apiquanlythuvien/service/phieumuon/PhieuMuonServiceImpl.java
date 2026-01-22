@@ -334,4 +334,14 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
         keyword, trangThai, pageable);
     return phieuMuonPage.map(phieuMuonMapper::toResponseMapper);
   }
+
+  @Override
+  public long countPhieuMuonDangMuon() {
+    return phieuMuonRepository.countByTrangThaiPhieuMuon(Const.PHIEUMUON_CT_BORROWED);
+  }
+
+  @Override
+  public long countPhieuMuonQuaHan() {
+    return phieuMuonRepository.countByTrangThaiPhieuMuon(Const.PHIEUMUON_CT_OVERDUE);
+  }
 }

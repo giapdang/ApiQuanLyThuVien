@@ -16,4 +16,6 @@ public interface DocGiaService {
   DocGiaResponseAdmin getDocGiaByDocGiaIdAdmin(Long docGiaId);
 
   void updateDocGiaAdmin(UpdateDocGiaAdminRequest updateDocGiaAdminRequest);
+
+  long countDocGia();
 }

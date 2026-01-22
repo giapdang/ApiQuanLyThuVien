@@ -13,4 +13,6 @@ public interface BanSaoSachService {
   void createBanSaoSach(CreateBanSaoSachRequest createBanSaoSachRequest);
 
   void updateBanSaoSach(UpdateBanSaoSachRequest updateBanSaoSachRequest);
+
+  long countBanSaoSach();
 }
