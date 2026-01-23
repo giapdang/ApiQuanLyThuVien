@@ -34,4 +34,6 @@ public interface PhieuMuonRepository extends JpaRepository<PhieuMuon, Long> {
                         @Param("keyword") String keyword,
                         @Param("trangThai") String trangThai,
                         Pageable pageable);
+        long countByTrangThaiPhieuMuon(String trangThaiPhieuMuon);
+
 }

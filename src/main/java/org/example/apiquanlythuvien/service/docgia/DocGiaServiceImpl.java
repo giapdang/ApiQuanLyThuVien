@@ -60,4 +60,9 @@ public class DocGiaServiceImpl implements DocGiaService {
       throw new NotFoundException("Doc gia khong tim thấy id: " + updateDocGiaAdminRequest.getDocGiaId());
     }
   }
+
+  @Override
+  public long countDocGia() {
+    return docGiaRepository.count();
+  }
 }

@@ -47,4 +47,9 @@ public class BanSaoSachServiceImpl implements BanSaoSachService {
     banSaoSachMapper.updateBanSaoSachFromRequest(updateBanSaoSachRequest, banSaoSach);
     banSaoSachRepository.save(banSaoSach);
   }
+
+  @Override
+  public long countBanSaoSach() {
+    return banSaoSachRepository.count();
+  }
 }

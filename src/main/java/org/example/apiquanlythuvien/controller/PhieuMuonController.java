@@ -1,5 +1,7 @@
 package org.example.apiquanlythuvien.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.example.apiquanlythuvien.data.request.UpdateChiTietStatusRequest;
 import org.example.apiquanlythuvien.data.request.UpdatePhieuMuonStatusRequest;
@@ -73,6 +75,22 @@ public class PhieuMuonController {
       @RequestBody UpdateChiTietStatusRequest request) {
     phieuMuonService.updateChiTietStatus(chiTietPhieuMuonId, request.getTinhTrang());
     return ResponseEntity.ok("Cập nhật tình trạng chi tiết mượn trả thành công");
+  }
+
+  @GetMapping("/admin/count")
+  public ResponseEntity<?> countPhieuMuonDangMuon() {
+    long count = phieuMuonService.countPhieuMuonDangMuon();
+    Map<String,Long> response = new HashMap<>();
+    response.put("totalPhieuMuon", count);
+    return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/admin/count/qua-han")
+  public ResponseEntity<?> countPhieuMuonQuaHan() {
+    long count = phieuMuonService.countPhieuMuonQuaHan();
+    Map<String, Long> response = new HashMap<>();
+    response.put("totalPhieuMuonQuaHan", count);
+    return ResponseEntity.ok(response);
   }
 
 }

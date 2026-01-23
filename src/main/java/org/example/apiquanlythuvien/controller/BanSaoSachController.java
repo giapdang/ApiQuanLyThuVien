@@ -1,6 +1,8 @@
 package org.example.apiquanlythuvien.controller;
 
 import jakarta.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.example.apiquanlythuvien.data.request.CreateBanSaoSachRequest;
 import org.example.apiquanlythuvien.data.request.UpdateBanSaoSachRequest;
@@ -37,5 +39,13 @@ public class BanSaoSachController {
   public ResponseEntity<?> updateBanSaoSach(@Valid @RequestBody UpdateBanSaoSachRequest request) {
     banSaoSachService.updateBanSaoSach(request);
     return ResponseEntity.ok("Cập nhật bản sao sách thành công");
+  }
+
+  @GetMapping("/count")
+  public ResponseEntity<?> countBanSaoSach() {
+    long count = banSaoSachService.countBanSaoSach();
+    Map<String,Long> response = new HashMap<>();
+    response.put("totalBanSaoSach", count);
+    return ResponseEntity.ok((response));
   }
 }
