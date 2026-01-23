@@ -58,6 +58,18 @@ public class SachController {
     return ResponseEntity.ok(sachService.getAllSachByTenTheLoai(tenTheLoai, pageable));
   }
 
+  @GetMapping("/tacgia")
+  public ResponseEntity<?> getAllSachByTacGiaId(@RequestParam Long tacGiaId,
+      @PageableDefault(page = 0, size = 10) Pageable pageable) {
+    return ResponseEntity.ok(sachService.getAllSachByTacGiaId(tacGiaId, pageable));
+  }
+
+  @GetMapping("/nhaxuatban")
+  public ResponseEntity<?> getAllSachByNhaXuatBanId(@RequestParam Long nhaXuatBanId,
+      @PageableDefault(page = 0, size = 10) Pageable pageable) {
+    return ResponseEntity.ok(sachService.getAllSachByNhaXuatBanId(nhaXuatBanId, pageable));
+  }
+
   @PostMapping("/admin/create")
   public ResponseEntity<?> createSach(@Valid @RequestBody CreateSachAdminRequest request) {
     sachService.createSach(request);

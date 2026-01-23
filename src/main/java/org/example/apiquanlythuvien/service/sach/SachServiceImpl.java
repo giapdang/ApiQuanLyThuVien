@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.apiquanlythuvien.data.request.CreateSachAdminRequest;
 import org.example.apiquanlythuvien.data.request.UpdateSachAdminRequest;
+import org.example.apiquanlythuvien.data.response.AnhBiaTenSachResponse;
 import org.example.apiquanlythuvien.data.response.ChiTietSachResponse;
 import org.example.apiquanlythuvien.data.response.SachAdminResponse;
 import org.example.apiquanlythuvien.data.response.SachResponse;
@@ -47,6 +48,20 @@ public class SachServiceImpl implements SachService {
   public Page<SachResponse> getAllSachByTenTheLoai(String tenTheLoai, Pageable pageable) {
     return sachRepository.getAllSachByTenTheLoai(tenTheLoai, pageable)
         .map(sachMapper::toResponse);
+  }
+
+  @Override
+  @Transactional
+  public Page<AnhBiaTenSachResponse> getAllSachByTacGiaId(Long tacGiaId, Pageable pageable) {
+    return sachRepository.getAllSachByTacGiaId(tacGiaId, pageable)
+        .map(sachMapper::toAnhBiaTenSachResponse);
+  }
+
+  @Override
+  @Transactional
+  public Page<AnhBiaTenSachResponse> getAllSachByNhaXuatBanId(Long nhaXuatBanId, Pageable pageable) {
+    return sachRepository.getAllSachByNhaXuatBanId(nhaXuatBanId, pageable)
+        .map(sachMapper::toAnhBiaTenSachResponse);
   }
 
   @Override

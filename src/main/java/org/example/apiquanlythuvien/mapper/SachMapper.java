@@ -3,6 +3,7 @@ package org.example.apiquanlythuvien.mapper;
 import org.example.apiquanlythuvien.data.entity.Sach;
 import org.example.apiquanlythuvien.data.request.CreateSachAdminRequest;
 import org.example.apiquanlythuvien.data.request.UpdateSachAdminRequest;
+import org.example.apiquanlythuvien.data.response.AnhBiaTenSachResponse;
 import org.example.apiquanlythuvien.data.response.ChiTietSachResponse;
 import org.example.apiquanlythuvien.data.response.SachAdminResponse;
 import org.example.apiquanlythuvien.data.response.SachResponse;
@@ -15,6 +16,8 @@ public interface SachMapper {
 
   @Mapping(target = "tacGiaList", source = "sachTacGia", qualifiedByName = "fromSachTacGiaList")
   SachResponse toResponse(Sach sach);
+
+  AnhBiaTenSachResponse toAnhBiaTenSachResponse(Sach sach);
 
   @Mapping(target = "tacGiaList", source = "sachTacGia", qualifiedByName = "fromSachTacGiaList")
   @Mapping(target = "theLoai", source = "theLoai.tenTheLoai")

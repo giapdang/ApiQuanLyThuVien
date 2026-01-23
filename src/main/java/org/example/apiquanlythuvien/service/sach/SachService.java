@@ -2,6 +2,7 @@ package org.example.apiquanlythuvien.service.sach;
 
 import org.example.apiquanlythuvien.data.request.CreateSachAdminRequest;
 import org.example.apiquanlythuvien.data.request.UpdateSachAdminRequest;
+import org.example.apiquanlythuvien.data.response.AnhBiaTenSachResponse;
 import org.example.apiquanlythuvien.data.response.ChiTietSachResponse;
 import org.example.apiquanlythuvien.data.response.SachAdminResponse;
 import org.example.apiquanlythuvien.data.response.SachResponse;
@@ -15,6 +16,10 @@ public interface SachService {
   ChiTietSachResponse getChiTietSachById(Long sachId);
 
   Page<SachResponse> getAllSachByTenTheLoai(String tenTheLoai, Pageable pageable);
+
+  Page<AnhBiaTenSachResponse> getAllSachByTacGiaId(Long tacGiaId, Pageable pageable);
+
+  Page<AnhBiaTenSachResponse> getAllSachByNhaXuatBanId(Long nhaXuatBanId, Pageable pageable);
 
   Page<SachAdminResponse> getAllSachAdmin(String trangThaiBanSaoSach, Pageable pageable);
 
