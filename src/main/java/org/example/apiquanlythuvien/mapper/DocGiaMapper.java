@@ -11,5 +11,7 @@ public interface DocGiaMapper {
 
   DocGiaResponseAdmin toDocGiaResponse(DocGia docGia);
 
-  void updateDocGiaRequestMapper(UpdateDocGiaAdminRequest updateDocGiaAdminRequest,@MappingTarget DocGia docGia);
+  DocGiaResponseAdmin toDocGiaResponseAdmin(DocGia docGia);
+
+  void updateDocGiaRequestMapper(UpdateDocGiaAdminRequest updateDocGiaAdminRequest, @MappingTarget DocGia docGia);
 }

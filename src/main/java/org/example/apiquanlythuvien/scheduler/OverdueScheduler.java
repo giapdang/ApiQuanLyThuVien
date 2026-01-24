@@ -26,7 +26,7 @@ public class OverdueScheduler {
     /**
      * Runs daily at midnight to check for overdue loans.
      */
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 * * ? * *")
     @Transactional
     public void checkOverdueLoans() {
         log.info("Running overdue check scheduler...");

@@ -34,6 +34,12 @@ public interface PhieuMuonRepository extends JpaRepository<PhieuMuon, Long> {
                         @Param("keyword") String keyword,
                         @Param("trangThai") String trangThai,
                         Pageable pageable);
+
         long countByTrangThaiPhieuMuon(String trangThaiPhieuMuon);
+
+        @Query("SELECT COUNT(pm) FROM PhieuMuon pm WHERE pm.theThuVien.theThuVienId = :theThuVienId AND pm.trangThaiPhieuMuon = :trangThai")
+        long countByTrangThaiPhieuMuonAndTheThuVienId(
+                        @Param("theThuVienId") Long theThuVienId,
+                        @Param("trangThai") String trangThai);
 
 }

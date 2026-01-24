@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.example.apiquanlythuvien.data.request.UpdateDocGiaAdminRequest;
 import org.example.apiquanlythuvien.data.response.DocGiaResponseAdmin;
 import org.example.apiquanlythuvien.data.response.DocGiaResponseUser;
+import org.example.apiquanlythuvien.data.response.DocGiaWithOverdueResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,4 +19,6 @@ public interface DocGiaService {
   void updateDocGiaAdmin(UpdateDocGiaAdminRequest updateDocGiaAdminRequest);
 
   long countDocGia();
+
+  DocGiaWithOverdueResponse getDocGiaByTheThuVienId(Long theThuVienId);
 }

@@ -39,6 +39,11 @@ public class DocGiaController {
     return ResponseEntity.ok(docGiaService.getDocGiaByDocGiaIdAdmin(docGiaId));
   }
 
+  @GetMapping("/admin/thethuvien")
+  public ResponseEntity<?> getDocGiaByTheThuVienId(@RequestParam Long theThuVienId) {
+    return ResponseEntity.ok(docGiaService.getDocGiaByTheThuVienId(theThuVienId));
+  }
+
   @PutMapping("/admin/updatedocgia")
   public ResponseEntity<?> updateDocGiaAdmin(@RequestBody UpdateDocGiaAdminRequest updateDocGiaAdminRequest) {
     docGiaService.updateDocGiaAdmin(updateDocGiaAdminRequest);
@@ -48,7 +53,7 @@ public class DocGiaController {
   @GetMapping("/admin/count")
   public ResponseEntity<?> countDocGia() {
     long count = docGiaService.countDocGia();
-    Map<String,Long> response = new HashMap<>();
+    Map<String, Long> response = new HashMap<>();
     response.put("totalDocGia", count);
     return ResponseEntity.ok(response);
   }

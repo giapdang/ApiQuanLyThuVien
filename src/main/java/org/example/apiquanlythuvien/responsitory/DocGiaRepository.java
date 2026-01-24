@@ -21,4 +21,7 @@ public interface DocGiaRepository extends JpaRepository<DocGia, Long> {
   Optional<DocGiaResponseUser> findByAccountId(@Param("accountId") Long accountId);
 
   Page<DocGia> findAllByTrangThaiDocGia(String trangThaiDocGia, Pageable pageable);
+
+  @Query("SELECT d FROM DocGia d WHERE d.theThuVien.theThuVienId = :theThuVienId")
+  Optional<DocGia> findByTheThuVienId(@Param("theThuVienId") Long theThuVienId);
 }

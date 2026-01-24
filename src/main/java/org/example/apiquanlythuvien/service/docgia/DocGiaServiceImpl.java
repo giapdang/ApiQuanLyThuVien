@@ -7,9 +7,12 @@ import org.example.apiquanlythuvien.data.entity.DocGia;
 import org.example.apiquanlythuvien.data.request.UpdateDocGiaAdminRequest;
 import org.example.apiquanlythuvien.data.response.DocGiaResponseAdmin;
 import org.example.apiquanlythuvien.data.response.DocGiaResponseUser;
+import org.example.apiquanlythuvien.data.response.DocGiaWithOverdueResponse;
+import org.example.apiquanlythuvien.defaults.Const;
 import org.example.apiquanlythuvien.exception.NotFoundException;
 import org.example.apiquanlythuvien.mapper.DocGiaMapper;
 import org.example.apiquanlythuvien.responsitory.DocGiaRepository;
+import org.example.apiquanlythuvien.responsitory.PhieuMuonRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DocGiaServiceImpl implements DocGiaService {
 
   private final DocGiaRepository docGiaRepository;
+  private final PhieuMuonRepository phieuMuonRepository;
   private final DocGiaMapper docGiaMapper;
 
   @Override
@@ -64,5 +68,20 @@ public class DocGiaServiceImpl implements DocGiaService {
   @Override
   public long countDocGia() {
     return docGiaRepository.count();
+  }
+
+  @Override
+  @Transactional
+  public DocGiaWithOverdueResponse getDocGiaByTheThuVienId(Long theThuVienId) {
+    DocGia docGia = docGiaRepository.findByTheThuVienId(theThuVienId)
+        .orElseThrow(() -> new NotFoundException("Độc giả không tìm thấy với mã thẻ: " + theThuVienId));
+
+    long overdueCount = phieuMuonRepository.countByTrangThaiPhieuMuonAndTheThuVienId(theThuVienId,
+        Const.PHIEUMUON_OVERDUE);
+
+    return DocGiaWithOverdueResponse.builder()
+        .docGia(docGiaMapper.toDocGiaResponseAdmin(docGia))
+        .overdueCount(overdueCount)
+        .build();
   }
 }
