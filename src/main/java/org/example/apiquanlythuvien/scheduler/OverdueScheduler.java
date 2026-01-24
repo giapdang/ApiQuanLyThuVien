@@ -32,36 +32,40 @@ public class OverdueScheduler {
         log.info("Running overdue check scheduler...");
 
         Date today = new Date();
+        List<String> statuses = List.of(Const.PHIEUMUON_CT_BORROWED, Const.PHIEUMUON_CT_OVERDUE);
 
-        // Find all ChiTietMuonTra where hanTra < today AND status is DANG_MUON
-        List<ChiTietMuonTra> overdueDetails = chiTietMuonTraRepository
-                .findByTinhTrangKhiTraAndHanTraBefore(Const.PHIEUMUON_CT_BORROWED, today);
+        // Find all ChiTietMuonTra where hanTra < today AND status is DANG_MUON or
+        // QUA_HAN
+        List<ChiTietMuonTra> overdueDetails = chiTietMuonTraRepository.findOverdue(statuses, today);
 
         for (ChiTietMuonTra chiTiet : overdueDetails) {
-            // Update status to QUA_HAN
-            chiTiet.setTinhTrangKhiTra(Const.PHIEUMUON_CT_OVERDUE);
+            // Update status to QUA_HAN if it was DANG_MUON
+            if (Const.PHIEUMUON_CT_BORROWED.equals(chiTiet.getTinhTrangKhiTra())) {
+                chiTiet.setTinhTrangKhiTra(Const.PHIEUMUON_CT_OVERDUE);
+            }
 
-            // Calculate overdue fine: 10% of book price * overdue days
+            // Calculate objective overdue fine: 10% of book price * total overdue days
             BigDecimal giaTien = chiTiet.getBanSaoSach().getSach().getGiaTien();
             long diffMillis = today.getTime() - chiTiet.getHanTra().getTime();
             long overdueDays = diffMillis / (1000 * 60 * 60 * 24);
 
             if (overdueDays > 0) {
                 BigDecimal dailyFine = giaTien.multiply(new BigDecimal("0.10"));
-                chiTiet.setTienPhat(dailyFine.multiply(BigDecimal.valueOf(overdueDays)));
+                BigDecimal totalFine = dailyFine.multiply(BigDecimal.valueOf(overdueDays));
+
+                if (chiTiet.getTienPhat() == null || chiTiet.getTienPhat().compareTo(totalFine) != 0) {
+                    chiTiet.setTienPhat(totalFine);
+                    chiTietMuonTraRepository.save(chiTiet);
+                }
+            } else if (Const.PHIEUMUON_CT_BORROWED.equals(chiTiet.getTinhTrangKhiTra())) {
+                chiTietMuonTraRepository.save(chiTiet);
             }
 
-            chiTietMuonTraRepository.save(chiTiet);
-
-            // Update parent PhieuMuon to QUA_HAN if not already
             PhieuMuon phieuMuon = chiTiet.getPhieuMuon();
             if (!Const.PHIEUMUON_OVERDUE.equals(phieuMuon.getTrangThaiPhieuMuon())) {
                 phieuMuon.setTrangThaiPhieuMuon(Const.PHIEUMUON_OVERDUE);
                 phieuMuonRepository.save(phieuMuon);
             }
-
-            log.info("Marked ChiTietMuonTra ID {} as overdue with fine {}",
-                    chiTiet.getChiTietMuonTraId(), chiTiet.getTienPhat());
         }
 
         log.info("Overdue check completed. Processed {} overdue items.", overdueDetails.size());
