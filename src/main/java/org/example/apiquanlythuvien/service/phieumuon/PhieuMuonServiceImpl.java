@@ -6,6 +6,8 @@ import org.example.apiquanlythuvien.data.request.CreatePhieuMuonRequest;
 import org.example.apiquanlythuvien.data.response.ChiTietMuonTraResponse;
 import org.example.apiquanlythuvien.data.response.PhieuMuonResponse;
 import org.example.apiquanlythuvien.defaults.Const;
+import org.example.apiquanlythuvien.exception.BadRequestException;
+import org.example.apiquanlythuvien.exception.ForbiddenException;
 import org.example.apiquanlythuvien.exception.NotFoundException;
 import org.example.apiquanlythuvien.mapper.ChiTietMuonTraMapper;
 import org.example.apiquanlythuvien.mapper.PhieuMuonMapper;
@@ -45,7 +47,7 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
     // Lấy username từ Security Context
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || !authentication.isAuthenticated()) {
-      throw new RuntimeException("Chưa đăng nhập");
+      throw new BadRequestException("Chưa đăng nhập");
     }
 
     String username = authentication.getName();
@@ -67,7 +69,7 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
     // Kiểm tra trạng thái độc giả và thẻ thư viện
     if (Const.DOCGIA_INACTIVE.equals(docGia.getTrangThaiDocGia()) ||
         !Const.THETHUVIEN_ACTIVE.equals(theThuVien.getTrangThai())) {
-      throw new RuntimeException("Độc giả hoặc thẻ thư viện đã bị vô hiệu hóa, không thể mượn sách");
+      throw new ForbiddenException("Độc giả hoặc thẻ thư viện đã bị vô hiệu hóa, không thể mượn sách");
     }
 
     // Lấy danh sách bản sao sách từ database
@@ -127,7 +129,7 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
     // Lấy username từ Security Context
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || !authentication.isAuthenticated()) {
-      throw new RuntimeException("Chưa đăng nhập");
+      throw new BadRequestException("Chưa đăng nhập");
     }
 
     String username = authentication.getName();
@@ -161,7 +163,7 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
   public List<ChiTietMuonTraResponse> getChiTietMuonTraByPhieuMuonId(Long phieuMuonId) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || !authentication.isAuthenticated()) {
-      throw new RuntimeException("Chưa đăng nhập");
+      throw new BadRequestException("Chưa đăng nhập");
     }
 
     boolean isAdmin = authentication.getAuthorities().stream()
@@ -186,7 +188,7 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
           .orElseThrow(() -> new NotFoundException("Không tìm thấy phiếu mượn"));
 
       if (!phieuMuon.getTheThuVien().getTheThuVienId().equals(theThuVien.getTheThuVienId())) {
-        throw new RuntimeException("Không có quyền truy cập phiếu mượn này");
+        throw new ForbiddenException("Không có quyền truy cập phiếu mượn này");
       }
     }
 
@@ -201,14 +203,14 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
   public void updatePhieuMuonStatus(Long phieuMuonId, String status) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || !authentication.isAuthenticated()) {
-      throw new RuntimeException("Chưa đăng nhập");
+      throw new BadRequestException("Chưa đăng nhập");
     }
 
     boolean isAdmin = authentication.getAuthorities().stream()
         .anyMatch(a -> a.getAuthority().equals(Const.ROLE_ADMIN));
 
     if (!isAdmin) {
-      throw new RuntimeException("Không có quyền thực hiện thao tác này");
+      throw new ForbiddenException("Không có quyền thực hiện thao tác này");
     }
 
     PhieuMuon phieuMuon = phieuMuonRepository.findById(phieuMuonId)
@@ -249,14 +251,14 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
   public void updateChiTietStatus(Long chiTietId, String status) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || !authentication.isAuthenticated()) {
-      throw new RuntimeException("Chưa đăng nhập");
+      throw new BadRequestException("Chưa đăng nhập");
     }
 
     boolean isAdmin = authentication.getAuthorities().stream()
         .anyMatch(a -> a.getAuthority().equals(Const.ROLE_ADMIN));
 
     if (!isAdmin) {
-      throw new RuntimeException("Không có quyền thực hiện thao tác này");
+      throw new ForbiddenException("Không có quyền thực hiện thao tác này");
     }
 
     ChiTietMuonTra chiTiet = chiTietMuonTraRepository.findById(chiTietId)

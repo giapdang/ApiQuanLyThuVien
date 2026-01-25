@@ -36,6 +36,13 @@ public class GlobalException {
     return new ErrorResponse(HttpStatus.CONFLICT, ex.getMessage(), LocalDateTime.now());
   }
 
+  @ExceptionHandler(ForbiddenException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  public ErrorResponse ForbiddenExceptionHandler(
+      ForbiddenException ex) {
+    return new ErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage(), LocalDateTime.now());
+  }
+
   @ExceptionHandler(InternalServcerEception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ErrorResponse InternalServcerEceptionHandler(
