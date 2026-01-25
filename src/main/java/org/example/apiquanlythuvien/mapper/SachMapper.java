@@ -23,6 +23,7 @@ public interface SachMapper {
   @Mapping(target = "theLoai", source = "theLoai.tenTheLoai")
   @Mapping(target = "nhaXuatBan", source = "nhaXuatBan.tenNhaXuatBan")
   @Mapping(target = "linhVuc", source = "linhVuc.tenLinhVuc")
+  @Mapping(target = "giaTien", source = "giaTien")
   ChiTietSachResponse toChiTietResponse(Sach sach);
 
   @Mapping(target = "tacGiaList", source = "sachTacGia", qualifiedByName = "fromSachTacGiaList")

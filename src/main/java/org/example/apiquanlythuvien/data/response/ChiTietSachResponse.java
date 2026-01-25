@@ -1,5 +1,6 @@
 package org.example.apiquanlythuvien.data.response;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import lombok.Data;
@@ -16,5 +17,6 @@ public class ChiTietSachResponse {
   private String nhaXuatBan;
   private String linhVuc;
   private String theLoai;
+  private BigDecimal giaTien;
   private List<TacGiaResponse> tacGiaList;
 }
