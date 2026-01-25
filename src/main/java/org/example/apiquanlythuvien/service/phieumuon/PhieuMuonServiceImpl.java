@@ -298,6 +298,11 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
         banSaoSach.setTrangThaiBanSaoSach(Const.BANSACH_LOST);
         break;
 
+      case Const.PHIEUMUON_CT_BORROWED: // DANG_MUON
+        chiTiet.setTienPhat(BigDecimal.ZERO);
+        chiTiet.setNgayTra(null); // Reset ngày trả
+        break;
+
       default:
         // For other statuses (DANG_CHO, DANG_MUON, QUA_HAN), just update status
         break;
@@ -329,7 +334,8 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
   }
 
   @Override
-  public Page<PhieuMuonResponse> searchPhieuMuonAdmin(String keyword, String trangThai, Pageable pageable) {
+  public Page<PhieuMuonResponse> searchPhieuMuonAdmin(String keyword, String trangThai,
+      Pageable pageable) {
     Page<PhieuMuon> phieuMuonPage = phieuMuonRepository.searchPhieuMuonAdmin(
         keyword, trangThai, pageable);
     return phieuMuonPage.map(phieuMuonMapper::toResponseMapper);
