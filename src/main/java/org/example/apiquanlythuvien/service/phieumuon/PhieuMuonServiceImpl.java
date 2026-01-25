@@ -64,9 +64,10 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
       throw new NotFoundException("Độc giả chưa có thẻ thư viện");
     }
 
-    // Kiểm tra trạng thái thẻ thư viện
-    if (!Const.THETHUVIEN_ACTIVE.equals(theThuVien.getTrangThai())) {
-      throw new RuntimeException("Thẻ thư viện không hoạt động");
+    // Kiểm tra trạng thái độc giả và thẻ thư viện
+    if (Const.DOCGIA_INACTIVE.equals(docGia.getTrangThaiDocGia()) ||
+        !Const.THETHUVIEN_ACTIVE.equals(theThuVien.getTrangThai())) {
+      throw new RuntimeException("Độc giả hoặc thẻ thư viện đã bị vô hiệu hóa, không thể mượn sách");
     }
 
     // Lấy danh sách bản sao sách từ database

@@ -59,6 +59,11 @@ public class DocGiaServiceImpl implements DocGiaService {
     if (docGiaOptional.isPresent()) {
       DocGia docGia = docGiaOptional.get();
       docGiaMapper.updateDocGiaRequestMapper(updateDocGiaAdminRequest, docGia);
+
+      if (docGia.getTheThuVien() != null) {
+        docGia.getTheThuVien().setTrangThai(docGia.getTrangThaiDocGia());
+      }
+
       docGiaRepository.save(docGia);
     } else {
       throw new NotFoundException("Doc gia khong tim thấy id: " + updateDocGiaAdminRequest.getDocGiaId());
