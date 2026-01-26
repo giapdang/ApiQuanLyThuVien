@@ -6,4 +6,5 @@ import lombok.Data;
 public class AnhBiaTenSachResponse {
     private String tenSach;
     private String anhBia;
+    private Long sachId;
 }
