@@ -32,4 +32,6 @@ public interface SachService {
   Page<SachResponse> searchSach(String keyword, Pageable pageable);
 
   Page<SachAdminResponse> searchSachAdmin(String keyword, String trangThaiBanSaoSach, Pageable pageable);
+
+  long countSach();
 }

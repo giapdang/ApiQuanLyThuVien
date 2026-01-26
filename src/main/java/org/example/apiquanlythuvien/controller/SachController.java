@@ -1,5 +1,7 @@
 package org.example.apiquanlythuvien.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.example.apiquanlythuvien.data.request.CreateSachAdminRequest;
 import org.example.apiquanlythuvien.data.request.UpdateSachAdminRequest;
@@ -86,5 +88,13 @@ public class SachController {
   public ResponseEntity<?> deleteSach(@RequestParam Long sachId) {
     sachService.deleteSach(sachId);
     return ResponseEntity.ok("Xóa sách thành công");
+  }
+
+  @GetMapping("/admin/count")
+  public ResponseEntity<?> countSach() {
+    long count = sachService.countSach();
+    Map<String, Object> response = new HashMap<>();
+    response.put("totalSach", count);
+    return ResponseEntity.ok(response);
   }
 }

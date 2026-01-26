@@ -111,6 +111,11 @@ public class SachServiceImpl implements SachService {
   }
 
   @Override
+  public long countSach() {
+    return sachRepository.count();
+  }
+
+  @Override
   @Transactional
   public void deleteSach(Long sachId) {
     if (!sachRepository.existsById(sachId)) {
