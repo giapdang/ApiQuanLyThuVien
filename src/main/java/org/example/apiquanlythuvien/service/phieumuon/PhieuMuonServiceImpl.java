@@ -221,20 +221,53 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
         .findByPhieuMuonPhieuMuonId(phieuMuonId);
 
     switch (status) {
-      case Const.PHIEUMUON_BORROWED: // DANG_MUON - Admin approves/hands over
+      case Const.PHIEUMUON_PENDING: // DANG_CHO
         for (ChiTietMuonTra chiTiet : chiTietList) {
-          if (Const.PHIEUMUON_CT_PENDING.equals(chiTiet.getTinhTrangKhiTra())) {
-            chiTiet.setTinhTrangKhiTra(Const.PHIEUMUON_CT_BORROWED);
-            chiTietMuonTraRepository.save(chiTiet);
-          }
+          chiTiet.setTinhTrangKhiTra(Const.PHIEUMUON_CT_PENDING);
+          chiTiet.setNgayTra(null);
+          chiTiet.getBanSaoSach().setTrangThaiBanSaoSach(Const.BANSACH_BORROWED);
+          chiTietMuonTraRepository.save(chiTiet);
+          banSaoSachRepository.save(chiTiet.getBanSaoSach());
         }
         break;
 
-      case Const.PHIEUMUON_CANCELLED: // HUY - Restore book availability
+      case Const.PHIEUMUON_BORROWED: // DANG_MUON
         for (ChiTietMuonTra chiTiet : chiTietList) {
-          BanSaoSach banSaoSach = chiTiet.getBanSaoSach();
-          banSaoSach.setTrangThaiBanSaoSach(Const.BANSACH_AVAILABLE);
-          banSaoSachRepository.save(banSaoSach);
+          chiTiet.setTinhTrangKhiTra(Const.PHIEUMUON_CT_BORROWED);
+          chiTiet.setNgayTra(null);
+          chiTiet.getBanSaoSach().setTrangThaiBanSaoSach(Const.BANSACH_BORROWED);
+          chiTietMuonTraRepository.save(chiTiet);
+          banSaoSachRepository.save(chiTiet.getBanSaoSach());
+        }
+        break;
+
+      case Const.PHIEUMUON_CANCELLED: // HUY
+        for (ChiTietMuonTra chiTiet : chiTietList) {
+          chiTiet.setTinhTrangKhiTra(Const.PHIEUMUON_CT_CANCELLED);
+          chiTiet.setNgayTra(null);
+          chiTiet.getBanSaoSach().setTrangThaiBanSaoSach(Const.BANSACH_AVAILABLE);
+          chiTietMuonTraRepository.save(chiTiet);
+          banSaoSachRepository.save(chiTiet.getBanSaoSach());
+        }
+        break;
+
+      case Const.PHIEUMUON_OVERDUE: // QUA_HAN
+        for (ChiTietMuonTra chiTiet : chiTietList) {
+          chiTiet.setTinhTrangKhiTra(Const.PHIEUMUON_CT_OVERDUE);
+          chiTiet.setNgayTra(null);
+          chiTiet.getBanSaoSach().setTrangThaiBanSaoSach(Const.BANSACH_BORROWED);
+          chiTietMuonTraRepository.save(chiTiet);
+          banSaoSachRepository.save(chiTiet.getBanSaoSach());
+        }
+        break;
+
+      case Const.PHIEUMUON_COMPLETED: // HOAN_TAT
+        for (ChiTietMuonTra chiTiet : chiTietList) {
+          chiTiet.setTinhTrangKhiTra(Const.PHIEUMUON_CT_RETURNED);
+          chiTiet.setNgayTra(new Date());
+          chiTiet.getBanSaoSach().setTrangThaiBanSaoSach(Const.BANSACH_AVAILABLE);
+          chiTietMuonTraRepository.save(chiTiet);
+          banSaoSachRepository.save(chiTiet.getBanSaoSach());
         }
         break;
 
@@ -269,6 +302,12 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
 
     // Calculate fines and update BanSaoSach based on new status
     switch (status) {
+      case Const.PHIEUMUON_CT_BORROWED: // DANG_MUON
+        chiTiet.setTienPhat(BigDecimal.ZERO);
+        chiTiet.setNgayTra(null);
+        banSaoSach.setTrangThaiBanSaoSach(Const.BANSACH_BORROWED);
+        break;
+
       case Const.PHIEUMUON_CT_RETURNED: // DA_TRA
         chiTiet.setNgayTra(new Date());
         // Calculate overdue fine if applicable
@@ -301,13 +340,17 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
         banSaoSach.setTrangThaiBanSaoSach(Const.BANSACH_LOST);
         break;
 
-      case Const.PHIEUMUON_CT_BORROWED: // DANG_MUON
+      case Const.PHIEUMUON_CT_OVERDUE: // QUA_HAN
+        banSaoSach.setTrangThaiBanSaoSach(Const.BANSACH_BORROWED);
+        break;
+
+      case Const.PHIEUMUON_CT_CANCELLED: // HUY
         chiTiet.setTienPhat(BigDecimal.ZERO);
-        chiTiet.setNgayTra(null); // Reset ngày trả
+        chiTiet.setNgayTra(null);
+        banSaoSach.setTrangThaiBanSaoSach(Const.BANSACH_AVAILABLE);
         break;
 
       default:
-        // For other statuses (DANG_CHO, DANG_MUON, QUA_HAN), just update status
         break;
     }
 
@@ -315,7 +358,6 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
     banSaoSachRepository.save(banSaoSach);
     chiTietMuonTraRepository.save(chiTiet);
 
-    // Check if all details are terminal -> auto-complete PhieuMuon
     checkAndCompletePhieuMuon(chiTiet.getPhieuMuon());
   }
 
@@ -332,7 +374,24 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
 
     if (allTerminal) {
       phieuMuon.setTrangThaiPhieuMuon(Const.PHIEUMUON_COMPLETED);
-      phieuMuonRepository.save(phieuMuon);
+    } else {
+      boolean anyOverdue = allDetails.stream()
+          .anyMatch(detail -> Const.PHIEUMUON_CT_OVERDUE.equals(detail.getTinhTrangKhiTra()));
+      if (anyOverdue) {
+        phieuMuon.setTrangThaiPhieuMuon(Const.PHIEUMUON_OVERDUE);
+      } else {
+        boolean allCancelled = allDetails.stream()
+            .allMatch(detail -> Const.PHIEUMUON_CT_CANCELLED.equals(detail.getTinhTrangKhiTra()));
+        if (allCancelled) {
+          phieuMuon.setTrangThaiPhieuMuon(Const.PHIEUMUON_CANCELLED);
+        } else {
+          boolean anyBorrowed = allDetails.stream()
+              .anyMatch(detail -> Const.PHIEUMUON_CT_BORROWED.equals(detail.getTinhTrangKhiTra()));
+          if (anyBorrowed) {
+            phieuMuon.setTrangThaiPhieuMuon(Const.PHIEUMUON_BORROWED);
+          }
+        }
+      }
     }
   }
 
