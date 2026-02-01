@@ -8,6 +8,7 @@ import org.example.apiquanlythuvien.data.request.UpdatePhieuMuonStatusRequest;
 import org.example.apiquanlythuvien.data.entity.PhieuMuon;
 import org.example.apiquanlythuvien.data.request.CreatePhieuMuonRequest;
 import org.example.apiquanlythuvien.data.response.ChiTietMuonTraResponse;
+import org.example.apiquanlythuvien.data.response.DocGiaFromChiTietResponse;
 import org.example.apiquanlythuvien.data.response.PhieuMuonResponse;
 import org.example.apiquanlythuvien.service.phieumuon.PhieuMuonService;
 import java.util.List;
@@ -91,6 +92,12 @@ public class PhieuMuonController {
     Map<String, Long> response = new HashMap<>();
     response.put("totalPhieuMuonQuaHan", count);
     return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/admin/chitietphieumuon/doc-gia")
+  public ResponseEntity<?> getDocGiaByChiTietMuonTra(
+      @RequestParam Long chiTietId) {
+    return ResponseEntity.ok(phieuMuonService.getDocGiaByChiTietMuonTraId(chiTietId));
   }
 
 }

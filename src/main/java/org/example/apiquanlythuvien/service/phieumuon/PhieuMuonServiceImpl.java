@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.example.apiquanlythuvien.data.entity.*;
 import org.example.apiquanlythuvien.data.request.CreatePhieuMuonRequest;
 import org.example.apiquanlythuvien.data.response.ChiTietMuonTraResponse;
+import org.example.apiquanlythuvien.data.response.DocGiaFromChiTietResponse;
 import org.example.apiquanlythuvien.data.response.PhieuMuonResponse;
 import org.example.apiquanlythuvien.defaults.Const;
 import org.example.apiquanlythuvien.exception.BadRequestException;
 import org.example.apiquanlythuvien.exception.ForbiddenException;
 import org.example.apiquanlythuvien.exception.NotFoundException;
 import org.example.apiquanlythuvien.mapper.ChiTietMuonTraMapper;
+import org.example.apiquanlythuvien.mapper.DocGiaMapper;
 import org.example.apiquanlythuvien.mapper.PhieuMuonMapper;
 import org.example.apiquanlythuvien.responsitory.*;
 import org.example.apiquanlythuvien.service.cart.CartService;
@@ -34,6 +36,7 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
   private final PhieuMuonMapper phieuMuonMapper;
   private final ChiTietMuonTraRepository chiTietMuonTraRepository;
   private final ChiTietMuonTraMapper chiTietMuonTraMapper;
+  private final DocGiaMapper docGiaMapper;
 
   @Override
   @Transactional
@@ -411,5 +414,13 @@ public class PhieuMuonServiceImpl implements PhieuMuonService {
   @Override
   public long countPhieuMuonQuaHan() {
     return phieuMuonRepository.countByTrangThaiPhieuMuon(Const.PHIEUMUON_CT_OVERDUE);
+  }
+
+  @Override
+  public DocGiaFromChiTietResponse getDocGiaByChiTietMuonTraId(Long chiTietId) {
+    return chiTietMuonTraRepository.findDocGiaByChiTietMuonTraId(chiTietId)
+        .map(docGiaMapper::toDocGiaFromChiTietResponse)
+        .orElseThrow(() -> new RuntimeException(
+            "Không tìm thấy độc giả với chi tiết mượn trả ID: " + chiTietId));
   }
 }

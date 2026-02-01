@@ -3,6 +3,7 @@ package org.example.apiquanlythuvien.service.phieumuon;
 import java.util.List;
 import org.example.apiquanlythuvien.data.request.CreatePhieuMuonRequest;
 import org.example.apiquanlythuvien.data.response.ChiTietMuonTraResponse;
+import org.example.apiquanlythuvien.data.response.DocGiaFromChiTietResponse;
 import org.example.apiquanlythuvien.data.response.PhieuMuonResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,4 +27,6 @@ public interface PhieuMuonService {
     long countPhieuMuonDangMuon();
 
     long countPhieuMuonQuaHan();
+
+    DocGiaFromChiTietResponse getDocGiaByChiTietMuonTraId(Long chiTietId);
 }

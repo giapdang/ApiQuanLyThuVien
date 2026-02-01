@@ -17,6 +17,7 @@ public interface SachMapper {
   @Mapping(target = "tacGiaList", source = "sachTacGia", qualifiedByName = "fromSachTacGiaList")
   SachResponse toResponse(Sach sach);
 
+  @Mapping(target = "sachId", source = "sach.sachId")
   AnhBiaTenSachResponse toAnhBiaTenSachResponse(Sach sach);
 
   @Mapping(target = "tacGiaList", source = "sachTacGia", qualifiedByName = "fromSachTacGiaList")
