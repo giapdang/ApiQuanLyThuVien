@@ -69,7 +69,8 @@ public class SecurityConfig {
                   "/api/sach/search",
                   "/api/sach/chitietsach",
                   "/api/sach/theloai",
-                  "/api/bansaosach/danhsach"
+                  "/api/bansaosach/danhsach",
+                  "/api/recommendations/popular"
               ).permitAll()
 
               // Admin endpoints - đặt trước để ưu tiên
@@ -92,7 +93,8 @@ public class SecurityConfig {
                   "/api/docgia/chitietdocgia",
                   "/api/cart/**",
                   "/api/phieumuon/create",
-                  "/api/phieumuon/load"
+                  "/api/phieumuon/load",
+                  "/api/recommendations/"
               ).hasAuthority(Const.ROLE_USER)
 
               // Các request còn lại cần authentication

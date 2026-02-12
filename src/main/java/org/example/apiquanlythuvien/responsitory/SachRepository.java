@@ -1,10 +1,12 @@
 package org.example.apiquanlythuvien.responsitory;
 
+import java.util.List;
 import org.example.apiquanlythuvien.data.entity.Sach;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -48,4 +50,20 @@ public interface SachRepository extends JpaRepository<Sach, Long> {
 
     @Query("SELECT s FROM Sach s WHERE s.nhaXuatBan.nhaXuatBanId = :nhaXuatBanId")
     Page<Sach> getAllSachByNhaXuatBanId(Long nhaXuatBanId, Pageable pageable);
+
+
+    @Query("SELECT s FROM Sach s WHERE s.sachId NOT IN :borrowedBookIds")
+    List<Sach> findBooksNotBorrowedByUser(@Param("borrowedBookIds") List<Long> borrowedBookIds);
+
+
+    @Query("SELECT s FROM Sach s")
+    List<Sach> findAllBooks();
+
+    @Query("SELECT s.sachId, COUNT(ct) FROM ChiTietMuonTra ct " +
+        "JOIN ct.banSaoSach bss " +
+        "JOIN bss.sach s " +
+        "WHERE ct.tinhTrangKhiTra = 'DA_TRA' " +
+        "GROUP BY s.sachId")
+    List<Object[]> getBookPopularityCounts();
+
 }
